@@ -1,0 +1,10 @@
+.content.index
+  h2=t('.welcome')
+  h4
+    em=t('.tag_line')
+  = link_to new_user_registration_path, class: "btn btn-success btn-lg"
+    = t('.call_to_action')
+    = " "
+    span.glyphicon.glyphicon-play
+
+  p=t('.explanation_html', href: link_to('AQUSA', 'http://github.com/gglucass/AQUSA'))

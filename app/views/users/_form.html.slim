@@ -1,0 +1,70 @@
+h2
+  | Edit3 #{'user'.to_s.humanize}
+= form_for(@user, as: 'user', url: registration_path('user'), html: { method: :put }) do |f|
+  / = devise_error_messages!
+  .field
+    = f.label :email
+    br/
+    = f.email_field :email, autofocus: true
+  - if @user.pending_reconfirmation?
+    div
+      | Currently waiting confirmation for: #{@user.unconfirmed_email}
+  .field
+    = f.label :password
+    i 
+      |  (leave blank if you don't want to change it)
+    br/
+    = f.password_field :password, autocomplete: "off"
+  .field
+    = f.label :password_confirmation
+    br/
+    = f.password_field :password_confirmation, autocomplete: "off"
+  .field
+    = f.label :current_password
+    i
+      |  (we need your current password to confirm your changes)"
+    br/
+    = f.password_field :current_password, autocomplete: "off"
+  .actions
+    = f.submit "Update"
+h3 Cancel my account
+p
+  | Unhappy? #{button_to "Cancel my account", registration_path('user'), data: { confirm: "Are you sure?" }, method: :delete}
+= link_to "Back", :back
+
+h3 Current Integrations
+- @integrations.each_with_index do |integration, index|
+  = simple_form_for [@user, integration] do |f|
+    b
+     i= "Integration #{index+1}: #{integration.kind}" 
+    = f.input :auth_info, as: :string
+    = f.button :submit
+
+h3 Add integration
+= simple_form_for [@user, @integrations.new] do |f|
+  = f.input :kind, collection: ['pivotal', 'jira'] - @integrations.map { |i| i.kind }
+  = f.input :auth_info, as: :string
+  = f.button :submit
+
+/ h3 Integrations
+/ - @integrations.each_with_index do |integration, index|
+/   b= "Integration #{index}: #{integration.kind}" 
+/   = form_for([@user, integration], as: 'integration', url: user_integration_path(@user, integration), method: :patch) do |f|
+    
+/     = f.text_field :auth_info
+/     .actions
+/       = f.submit "Update Integration"
+
+
+
+/ = form_for([@user, @user.integrations.new], as: 'integration', url: user_integrations_path(@user), method: :post) do |f|
+/   .field
+/     = f.label :kind
+/     br/
+/     = f.select :kind, [["Pivotal Tracker", "pivotal"], ["Jira", "jira"]]
+/   .field
+/     = f.label :auth_info
+/     br/
+/     = f.text_field :auth_info
+/   .actions
+/     = f.submit "Create Integration"
