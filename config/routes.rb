@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   # You can have the root of your site routed with "root"
   root to: 'static_pages#index'
 
-  resources :users, only: [:edit] do
+  resources :users, only: [:show] do
     resources :integrations, only: [:new, :create, :update]
   end
   

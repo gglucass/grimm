@@ -1,5 +1,5 @@
 h2
-  | Edit3 #{'user'.to_s.humanize}
+  | Your info
 = form_for(@user, as: 'user', url: registration_path('user'), html: { method: :put }) do |f|
   / = devise_error_messages!
   .field
@@ -27,10 +27,6 @@ h2
     = f.password_field :current_password, autocomplete: "off"
   .actions
     = f.submit "Update"
-h3 Cancel my account
-p
-  | Unhappy? #{button_to "Cancel my account", registration_path('user'), data: { confirm: "Are you sure?" }, method: :delete}
-= link_to "Back", :back
 
 h3 Current Integrations
 - @integrations.each_with_index do |integration, index|
@@ -46,25 +42,7 @@ h3 Add integration
   = f.input :auth_info, as: :string
   = f.button :submit
 
-/ h3 Integrations
-/ - @integrations.each_with_index do |integration, index|
-/   b= "Integration #{index}: #{integration.kind}" 
-/   = form_for([@user, integration], as: 'integration', url: user_integration_path(@user, integration), method: :patch) do |f|
-    
-/     = f.text_field :auth_info
-/     .actions
-/       = f.submit "Update Integration"
-
-
-
-/ = form_for([@user, @user.integrations.new], as: 'integration', url: user_integrations_path(@user), method: :post) do |f|
-/   .field
-/     = f.label :kind
-/     br/
-/     = f.select :kind, [["Pivotal Tracker", "pivotal"], ["Jira", "jira"]]
-/   .field
-/     = f.label :auth_info
-/     br/
-/     = f.text_field :auth_info
-/   .actions
-/     = f.submit "Create Integration"
+hr
+hr
+p 
+  | #{button_to "Cancel my account", registration_path('user'), data: { confirm: "Are you sure?" }, method: :delete, class: 'btn btn-default'} Note: This cannot be undone

@@ -3,7 +3,7 @@ class IntegrationsController < ApplicationController
   def create
     user = User.find(params[:integration][:user_id])
     user.integrations.create(strong_params)
-    redirect_to edit_user_path(user)
+    redirect_to user_path(user)
   end
 
   def strong_params
