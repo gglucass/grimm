@@ -5,4 +5,5 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable, :confirmable
 
   has_many :integrations
+  has_and_belongs_to_many :projects, -> { uniq }
 end
