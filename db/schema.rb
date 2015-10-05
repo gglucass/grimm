@@ -11,12 +11,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151003142250) do
+ActiveRecord::Schema.define(version: 20151005102602) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "errors", force: :cascade do |t|
+  create_table "comments", force: :cascade do |t|
+    t.string   "external_id"
+    t.text     "text"
+    t.integer  "defect_id"
+    t.integer  "user_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "comments", ["defect_id"], name: "index_comments_on_defect_id", using: :btree
+  add_index "comments", ["user_id"], name: "index_comments_on_user_id", using: :btree
+
+  create_table "defects", force: :cascade do |t|
     t.text     "highlight"
     t.string   "kind"
     t.string   "subkind"
@@ -28,8 +40,8 @@ ActiveRecord::Schema.define(version: 20151003142250) do
     t.datetime "updated_at",     null: false
   end
 
-  add_index "errors", ["project_id"], name: "index_errors_on_project_id", using: :btree
-  add_index "errors", ["story_id"], name: "index_errors_on_story_id", using: :btree
+  add_index "defects", ["project_id"], name: "index_defects_on_project_id", using: :btree
+  add_index "defects", ["story_id"], name: "index_defects_on_story_id", using: :btree
 
   create_table "integrations", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -42,10 +54,11 @@ ActiveRecord::Schema.define(version: 20151003142250) do
   add_index "integrations", ["user_id"], name: "index_integrations_on_user_id", using: :btree
 
   create_table "projects", force: :cascade do |t|
-    t.string   "name",        null: false
+    t.string   "name",                                               null: false
     t.string   "external_id"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.datetime "created_at",                                         null: false
+    t.datetime "updated_at",                                         null: false
+    t.text     "format",      default: "As a, I'm able to, So that"
   end
 
   create_table "projects_users", id: false, force: :cascade do |t|
@@ -62,6 +75,9 @@ ActiveRecord::Schema.define(version: 20151003142250) do
     t.integer  "project_id"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
+    t.text     "role"
+    t.text     "means"
+    t.text     "ends"
   end
 
   add_index "stories", ["project_id"], name: "index_stories_on_project_id", using: :btree
@@ -91,7 +107,9 @@ ActiveRecord::Schema.define(version: 20151003142250) do
   add_index "users", ["integration_id"], name: "index_users_on_integration_id", using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
-  add_foreign_key "errors", "projects"
-  add_foreign_key "errors", "stories"
+  add_foreign_key "comments", "defects"
+  add_foreign_key "comments", "users"
+  add_foreign_key "defects", "projects"
+  add_foreign_key "defects", "stories"
   add_foreign_key "stories", "projects"
 end

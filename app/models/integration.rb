@@ -4,14 +4,16 @@ class Integration < ActiveRecord::Base
   serialize :auth_info
   after_create :sync_integration
 
-  private
+
+  def process_pivotal_webhook(data)
+  end
 
   def sync_integration
-    eval("initialize_#{self.kind}")
+    eval("self.initialize_#{self.kind}")
   end
 
   def initialize_pivotal
-    client = TrackerApi::Client.new(token: self.auth_info)  
+    client = TrackerApi::Client.new(token: self.auth_info)
     
     client.projects.each do |project|
       new_project = Project.find_or_create_by(external_id: project.id)
@@ -19,15 +21,19 @@ class Integration < ActiveRecord::Base
       new_project.users << user
       new_project.save
       project.stories.each do |story|
-        new_project.stories.create(external_id: story.id, title: story.name)
+        new_project.stories.find_or_create_by(external_id: story.id, title: story.name)
       end
-      # create a webhook for that project
-      # analyze all stories
+      new_project.analyze()
+      self.create_pivotal_webhook(new_project)
     end
     return self.user.projects
   end
 
   def initialize_jira
     raise 'jira is unsupported for now'
+  end
+
+  def create_pivotal_webhook(project)
+    HTTP.headers('X-TrackerToken' => self.auth_info).post("https://www.pivotaltracker.com/services/v5/projects/#{project.external_id}/webhooks", form: {webhook_url: "http://requestb.in/1ayt1p91", webhook_version: "v5"} )
   end
 end

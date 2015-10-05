@@ -9,6 +9,10 @@ Rails.application.routes.draw do
   resources :users, only: [:show] do
     resources :integrations, only: [:new, :create, :update]
   end
+
+  resources :defects, only: [] do 
+    get 'create_comments'
+  end
   
 
   # Example of regular route:

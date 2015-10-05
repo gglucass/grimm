@@ -1,6 +1,6 @@
-class CreateErrors < ActiveRecord::Migration
+class CreateDefects < ActiveRecord::Migration
   def change
-    create_table :errors do |t|
+    create_table :defects do |t|
       t.text :highlight
       t.string :kind
       t.string :subkind
@@ -12,7 +12,7 @@ class CreateErrors < ActiveRecord::Migration
       t.timestamps null: false
     end
 
-    add_foreign_key :errors, :projects
-    add_foreign_key :errors, :stories
+    add_foreign_key :defects, :projects
+    add_foreign_key :defects, :stories
   end
 end
