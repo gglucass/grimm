@@ -7,5 +7,6 @@ class CreateStories < ActiveRecord::Migration
 
       t.timestamps null: false
     end
+    add_foreign_key :stories, :projects
   end
 end
