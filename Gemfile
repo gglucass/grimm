@@ -54,3 +54,4 @@ gem 'simple_form'
 # Integrations
 gem 'tracker_api'
 gem 'pundit'
+gem 'http'
