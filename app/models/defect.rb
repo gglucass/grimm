@@ -3,7 +3,6 @@ class Defect < ActiveRecord::Base
   belongs_to :story
   belongs_to :project
   has_many :comments, dependent: :destroy
-  after_create :create_comments
 
   def create_comments(user)
     client = TrackerApi::Client.new(token: user.integrations.first.auth_info)

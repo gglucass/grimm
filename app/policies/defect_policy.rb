@@ -27,7 +27,6 @@ class DefectPolicy < ApplicationPolicy
   # end
 
   def create_comments?
-    require 'pry';binding.pry
     true
   end
 

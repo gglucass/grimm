@@ -4,6 +4,6 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable, :confirmable
 
-  has_many :integrations
+  has_many :integrations, dependent: :destroy
   has_and_belongs_to_many :projects, -> { uniq }
 end

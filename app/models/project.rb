@@ -1,7 +1,7 @@
 # id, name, external_id
 class Project < ActiveRecord::Base
   has_and_belongs_to_many :users, -> { uniq }
-  has_many :stories
+  has_many :stories, dependent: :destroy
 
   def analyze
     Defect.where(project_id: self.id, false_positive: false).each do |defect|

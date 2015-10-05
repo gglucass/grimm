@@ -13,6 +13,8 @@ Rails.application.routes.draw do
   resources :defects, only: [] do 
     get 'create_comments'
   end
+
+  post 'webhook' => 'static_pages#webhook'
   
 
   # Example of regular route:
