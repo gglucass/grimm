@@ -1,0 +1,4 @@
+center
+  h1
+   = "#{@project.name} - "
+   = pluralize(@project.stories.count, "story")

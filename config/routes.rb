@@ -15,6 +15,9 @@ Rails.application.routes.draw do
   end
 
   post 'webhook' => 'static_pages#webhook'
+
+  resources :projects, only: [:show] do
+  end
   
 
   # Example of regular route:
