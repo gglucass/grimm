@@ -10,6 +10,11 @@ class Comment < ActiveRecord::Base
   end
 
   def remove_from_pivotal
-    HTTP.headers('X-TrackerToken' => self.user.integrations.first.auth_info).delete("https://www.pivotaltracker.com/services/v5/projects/#{self.defect.project.external_id}/stories/#{self.defect.story.external_id}/comments/#{self.external_id}")
+    HTTP.headers('X-TrackerToken' => self.user.integrations.where(kind: 'pivotal').first.auth_info).delete("https://www.pivotaltracker.com/services/v5/projects/#{self.defect.project.external_id}/stories/#{self.defect.story.external_id}/comments/#{self.external_id}")
+  end
+
+  def remove_from_jira
+    integration = self.user.integrations.where(kind: 'jira').first
+    HTTP.basic_auth(user: integration.auth_info["jira_username"], pass: integration.auth_info["jira_password"]).delete("#{integration.auth_info["jira_url"]}/rest/api/2/issue/#{self.defect.story.external_id}/comment/#{self.external_id}")
   end
 end

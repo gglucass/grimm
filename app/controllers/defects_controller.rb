@@ -6,8 +6,7 @@ class DefectsController < ApplicationController
 
   def create_comments
     @defect = Defect.find(params[:defect_id])
-    user = @defect.project.users.first
-    @defect.create_comments(user)
+    @defect.create_comment()
     render nothing: true, status: :ok
   end
 

@@ -36,11 +36,21 @@ h3 Current Integrations
     = f.input :auth_info, as: :string
     = f.button :submit
 
-h3 Add integration
+h3 Add Jira integration
 = simple_form_for [@user, @integrations.new] do |f|
-  = f.input :kind, collection: ['pivotal', 'jira'] - @integrations.map { |i| i.kind }
+  = f.hidden_field :kind, value: 'jira'
+  = f.simple_fields_for :auth_info do |a|  
+    = a.input :jira_url, as: :string
+    = a.input :jira_username, as: :string
+    = a.input :jira_password, as: :password
+  = f.button :submit
+
+h3 Add Pivotal integration
+= simple_form_for [@user, @integrations.new] do |f|
+  = f.hidden_field :kind, value: 'jira'
   = f.input :auth_info, as: :string
   = f.button :submit
+
 
 hr
 hr
