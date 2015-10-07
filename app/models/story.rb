@@ -8,5 +8,6 @@ class Story < ActiveRecord::Base
       defect.destroy()
     end
     Thread.start { HTTP.get("http://127.0.0.1:5000/project/#{self.project.id}/stories/#{self.id}/analyze") }
+    self
   end
 end
