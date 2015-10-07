@@ -19,6 +19,7 @@ class Integration < ActiveRecord::Base
       project.stories.each do |story|
         new_project.stories.find_or_create_by(external_id: story.id, title: story.name)
       end
+      sleep 1.5
       new_project.analyze()
       self.create_pivotal_webhook(new_project)
     end
@@ -42,6 +43,7 @@ class Integration < ActiveRecord::Base
       project.issues.each do |issue|
         new_project.stories.find_or_create_by(external_id: issue.id, title: issue.summary)
       end
+      sleep 1.5
       new_project.analyze()
     end
     return self.user.projects

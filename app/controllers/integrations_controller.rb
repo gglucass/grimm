@@ -7,7 +7,18 @@ class IntegrationsController < ApplicationController
   end
 
   def strong_params
+    if params.require(:integration).permit(:kind)[:kind] == 'pivotal'
+      return pivotal_params
+    elsif params.require(:integration).permit(:kind)[:kind] == 'jira'
+      return jira_params
+    end
+  end
+
+  def jira_params
     params.require(:integration).permit(:kind, :auth_info => [:jira_url, :jira_username, :jira_password])
   end
 
+  def pivotal_params
+    params.require(:integration).permit(:kind, :auth_info)
+  end
 end

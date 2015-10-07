@@ -47,7 +47,7 @@ h3 Add Jira integration
 
 h3 Add Pivotal integration
 = simple_form_for [@user, @integrations.new] do |f|
-  = f.hidden_field :kind, value: 'jira'
+  = f.hidden_field :kind, value: 'pivotal'
   = f.input :auth_info, as: :string
   = f.button :submit
 
