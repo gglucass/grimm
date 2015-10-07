@@ -34,6 +34,6 @@ class Integration < ActiveRecord::Base
   end
 
   def create_pivotal_webhook(project)
-    HTTP.headers('X-TrackerToken' => self.auth_info).post("https://www.pivotaltracker.com/services/v5/projects/#{project.external_id}/webhooks", form: {webhook_url: "http://requestb.in/1ayt1p91", webhook_version: "v5"} )
+    HTTP.headers('X-TrackerToken' => self.auth_info).post("https://www.pivotaltracker.com/services/v5/projects/#{project.external_id}/webhooks", form: {webhook_url: "#{ENV["HOSTNAME"]}/1ayt1p91", webhook_version: "v5"} )
   end
 end
