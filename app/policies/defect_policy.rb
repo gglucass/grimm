@@ -3,7 +3,6 @@ class DefectPolicy < ApplicationPolicy
 
   def initialize(user, model)
     @user = user
-    require pry;binding.pry
     @model = model
   end
 
