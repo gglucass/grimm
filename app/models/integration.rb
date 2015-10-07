@@ -10,19 +10,19 @@ class Integration < ActiveRecord::Base
 
   def initialize_pivotal
     client = TrackerApi::Client.new(token: self.auth_info)
-    
+    projects = []
     client.projects.each do |project|
       new_project = Project.find_or_create_by(external_id: project.id, kind: self.kind)
       new_project.name ||= project.name
       new_project.users << user
-      new_project.save
+      new_project.save()
       project.stories.each do |story|
         new_project.stories.find_or_create_by(external_id: story.id, title: story.name)
       end
-      sleep 1.5
-      new_project.analyze()
+      projects << new_project
       self.create_pivotal_webhook(new_project)
     end
+    projects.each { |p| p.reload.analyze() }
     return self.user.projects
   end
 
@@ -35,17 +35,18 @@ class Integration < ActiveRecord::Base
       password: self.auth_info["jira_password"]
     }
     client = JIRA::Client.new(options)
+    projects = []
     client.Project.all.each do |project|
       new_project = Project.find_or_create_by(external_id: project.id, kind: self.kind)
       new_project.name ||= project.name
       new_project.users << user
-      new_project.save
+      new_project.save()
       project.issues.each do |issue|
         new_project.stories.find_or_create_by(external_id: issue.id, title: issue.summary)
       end
-      sleep 1.5
-      new_project.analyze()
+      projects << new_project
     end
+    projects.each { |p| p.reload.analyze() }
     return self.user.projects
   end
 
