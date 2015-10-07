@@ -33,3 +33,32 @@ en:
       destroy_user_session: "Sign out"
     application:
       title: "Artisinal | User Stories" 
+
+  defect_comments:
+    well_formed:
+      no_means_comma_explanation: "The user story is well-formed, but it's good practice to add a comma between the role and action segments"
+      no_ends_comma_explanation: "This user story is well-formed, but it's good practice to add a comma between the action and benefit segments"
+      no_means_explanation: "It looks like you didn't include an action. Are you sure this is a user story?"
+      no_role_explanation: "It looks like you didn't include a role. Are you sure this is a user story?"
+      no_means_comma: "No comma between role and action"
+      no_ends_comma: "No comma between action and benefit"
+      no_means: "No action"
+      no_role: "No role"
+      content_means: "Action incomplete"
+      content_means_explanation: "Although the format indicates this user story contains an action, it looks like we're missing either a verb or a noun"
+      content_role: "Role incomplete"
+      content_means_explanation: "Although the format indicates this user story contains a role it look like there is no noun"
+    atomic:
+      conjunctions: "Not atomic"
+      conjunctions_explanation: "A user story should consist of only one feature, avoid using conjunctions such as and or &"
+    unique:
+      identical: "Duplication"
+      identical_explanation: "User stories should not be identical to one another"
+    minimal:
+      punctuation: "Not minimal"
+      punctuation_explanation: "User stories should not include additional information aside from core user story text. Move this to the description."
+      brackets: "Not minimal"
+      brackets_explanation: "User stories should not include additional information hidden in brackets."
+    uniform:
+      uniform: "Irregular format"
+      uniform_explanation: "This user story its format deviates from the format used by the majority of your user stories"
