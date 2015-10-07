@@ -29,6 +29,7 @@ en:
   layouts:
     header:
       home: "Home"
+      instructions: "Instructions"
       new_user_session: "Sign in"
       destroy_user_session: "Sign out"
     application:

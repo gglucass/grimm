@@ -3,6 +3,8 @@ nav.menu.navbar.navbar-default
   ul.nav.navbar-nav
     li
       = link_to t(".home"), root_path
+    li
+      = link_to t(".instructions"), instructions_path
   ul.nav.navbar-nav.pull-right
     - if user_signed_in?
       li

@@ -15,6 +15,7 @@ Rails.application.routes.draw do
   end
 
   post 'webhook' => 'static_pages#webhook'
+  get 'instructions' => 'static_pages#instructions'
 
   resources :projects, only: [:show] do
   end
