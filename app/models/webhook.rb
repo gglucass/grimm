@@ -42,9 +42,11 @@ class Webhook
 
   def self.jira_issue_updated(data, project)
     story = Story.where(project_id: project.id, external_id: data[:issue][:id]).first
-    story.title = data[:issue][:fields][:summary]
-    if story.save()
-      story.analyze()
+    unless story.title == data[:issue][:fields][:summary]
+      story.title = data[:issue][:fields][:summary]
+      if story.save()
+        story.analyze()
+      end
     end
   end
 
