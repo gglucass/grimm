@@ -16,6 +16,5 @@ class Comment < ActiveRecord::Base
 
   def remove_from_jira(integration)
     HTTP.basic_auth(user: integration.auth_info["jira_username"], pass: integration.auth_info["jira_password"]).delete("#{integration.auth_info["jira_url"]}/rest/api/2/issue/#{self.defect.story.external_id}/comment/#{self.external_id}")
-    HTTP.basic_auth(user: integration.auth_info["jira_username"], pass: integration.auth_info["jira_password"]).delete("#{integration.auth_info["jira_url"]}/rest/api/2/issue/#{comment.defect.story.external_id}/comment/#{comment.external_id}")
   end
 end
