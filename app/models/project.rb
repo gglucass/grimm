@@ -7,6 +7,6 @@ class Project < ActiveRecord::Base
     Defect.where(project_id: self.id, false_positive: false).each do |defect|
       defect.destroy()
     end
-    response = HTTP.get("http://127.0.0.1:5000/project/#{self.id}/analyze")
+    Thread.start { HTTP.get("http://127.0.0.1:5000/project/#{self.id}/analyze") }
   end
 end
