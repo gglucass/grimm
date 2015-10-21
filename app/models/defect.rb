@@ -5,7 +5,9 @@ class Defect < ActiveRecord::Base
   has_many :comments, dependent: :destroy
 
   def create_comment
-    self.send("create_#{self.project.kind}_comment")
+    if self.project.create_comments?
+      self.send("create_#{self.project.kind}_comment")
+    end
   end
 
   def create_pivotal_comment
