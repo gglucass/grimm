@@ -2,7 +2,8 @@ center
   h1
     = "#{@project.name} - "
     = pluralize(@project.stories.count, "story")
-  / .btn.btn-default= link_to 'toggle comments' toggle_comments_path
+  .btn.btn-default= link_to t(".toggle_comments_#{@project.create_comments}"), project_toggle_comments_path(@project.id)
+br
 .defect-blocks
   .left-defect-block
     .defect-block

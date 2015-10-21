@@ -63,3 +63,7 @@ en:
     uniform:
       uniform: "Irregular format"
       uniform_explanation: "This user story its format deviates from the format used by the majority of your user stories"
+  projects:
+    show:
+      toggle_comments_false: "Turn comments on"
+      toggle_comments_true: "Turn comments off"

@@ -18,6 +18,7 @@ Rails.application.routes.draw do
   get 'instructions' => 'static_pages#instructions'
 
   resources :projects, only: [:show] do
+    get 'toggle_comments'
   end
   
 

@@ -24,4 +24,7 @@ class ProjectPolicy
     # @current_user.admin?
   end
 
+  def toggle_comments?
+    @project.users.include?(@current_user)
+  end
 end

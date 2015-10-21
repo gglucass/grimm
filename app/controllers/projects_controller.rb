@@ -1,5 +1,5 @@
 class ProjectsController < ApplicationController
-  before_action :set_and_authorize_project, only: [:show]
+  before_action :set_and_authorize_project, only: [:show, :toggle_comments]
   
   def show
     @project_defects = @project.defects.where(false_positive: false)
@@ -13,7 +13,11 @@ class ProjectsController < ApplicationController
 
 
   def set_and_authorize_project
-    authorize @project = Project.find(params[:id])
+    authorize @project = Project.find(params[:id] || params[:project_id])
   end
 
+  def toggle_comments
+    @project.toggle!(:create_comments)
+    redirect_to project_path(@project)
+  end
 end
