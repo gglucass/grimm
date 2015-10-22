@@ -13,6 +13,12 @@
       p
         = "To start using Artisinal, provide your JIRA/Pivotal credentials: "
         = link_to "edit account", user_path(current_user)
+    - if current_user.admin?
+      h3
+        u="All projects"
+      - Project.all.each do |project|
+        h4
+          = link_to project.name, project_path(project)
   
   - else
     h2=t('.welcome')
