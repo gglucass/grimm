@@ -4,6 +4,9 @@ class StaticPagesController < ApplicationController
   skip_after_action :verify_authorized, only: [:webhook]
 
   def index
+    unless user_signed_in?
+      @project = Project.where(publik: true).order("RANDOM()").first
+    end
   end
 
   def webhook

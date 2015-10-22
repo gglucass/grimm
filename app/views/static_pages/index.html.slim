@@ -24,4 +24,13 @@
       span.glyphicon.glyphicon-play
 
     p=t('.explanation_html', href: link_to('AQUSA', 'http://github.com/gglucass/AQUSA'))
+    - if @project
+      - @project_defects = @project.defects.where(false_positive: false)
+      - @severe_defects = @project.defects.where(severity: "medium", false_positive: false)
+      - @medium_defects = @project.defects.where(severity: "high", false_positive: false)
+      - @minor_defects = @project.defects.where(severity: "minor", false_positive: false)
+      - @false_positives = @project.defects.where(false_positive: true)
+      - @perfect_stories = Story.includes(:defects).where(defects: {id: nil}, project_id: @project.id)
+      - @stories = @project.stories.sort
+      = render partial: "projects/show_report", locals: {project: @project, project_defects: @project_defects, minor_defects: @minor_defects, medium_defects: @medium_defects, severe_defects: @severe_defects, false_positives: @false_positives, perfect_stories: @perfect_stories, stories: @stories}
 

@@ -11,8 +11,7 @@ class ProjectPolicy
   end
 
   def show?
-    # @current_user.admin? or 
-    @project.users.include?(@current_user)
+    @current_user.admin? or @project.users.include?(@current_user) or @project.public?
   end
 
   def update?
