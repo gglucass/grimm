@@ -5,7 +5,7 @@ class StaticPagesController < ApplicationController
 
   def index
     unless user_signed_in?
-      @project = Project.where(publik: true).order("RANDOM()").first
+      @project = Project.where(publik: true).order("RAND()").first
     end
   end
 
