@@ -48,7 +48,7 @@ group :production do
 end
 
 # gem 'pg'
-gem 'mysql2'
+gem 'mysql2', '~> 0.3.18'
 gem 'devise'
 gem 'slim'
 gem 'bootstrap-sass'
