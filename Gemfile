@@ -47,7 +47,8 @@ group :production do
   gem 'passenger'
 end
 
-gem 'pg'
+# gem 'pg'
+gem 'mysql2'
 gem 'devise'
 gem 'slim'
 gem 'bootstrap-sass'
