@@ -46,10 +46,11 @@ end
 
 group :production do
   gem 'passenger'
+  gem 'mysql2', '~> 0.3.18'
 end
 
 # gem 'pg'
-gem 'mysql2', '~> 0.3.18'
+# gem 'mysql2', '~> 0.3.18'
 gem 'devise'
 gem 'slim'
 gem 'bootstrap-sass'
@@ -61,3 +62,4 @@ gem 'tracker_api'
 gem 'pundit'
 gem 'http'
 gem 'jira-ruby', require: 'jira'
+gem 'paperclip', '~> 4.3'

@@ -1,5 +1,8 @@
 # id, name, external_id
 class Project < ActiveRecord::Base
+  has_attached_file :requirements_document
+  validates_attachment :requirements_document, content_type: { content_type: 'text/csv'}
+
   has_and_belongs_to_many :users, -> { uniq }
   has_many :defects
   has_many :stories, dependent: :destroy
