@@ -6,8 +6,13 @@ class ProjectsController < ApplicationController
   end
   
   def create
-    @project = Project.create(project_params)
-    redirect_to project_path(@project)
+    @project = Project.new(project_params)
+    @project.users << current_user
+    if @project.save
+      redirect_to project_path(@project)
+    else
+      render new
+    end
   end
 
   def edit
