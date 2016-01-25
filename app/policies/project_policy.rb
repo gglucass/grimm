@@ -14,8 +14,12 @@ class ProjectPolicy
     @current_user.admin? or @project.users.include?(@current_user) or @project.public?
   end
 
+  def edit?
+    @current_user.admin? or @project.users.include?(@current_user) or @project.public?
+  end
+
   def update?
-    # @current_user.admin?
+    @current_user.admin? or @project.users.include?(@current_user) or @project.public?
   end
 
   def destroy?

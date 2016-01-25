@@ -1,9 +1,23 @@
 class ProjectsController < ApplicationController
-  before_action :set_and_authorize_project, only: [:show, :toggle_comments]
+  before_action :set_and_authorize_project, only: [:show, :edit, :update, :toggle_comments]
+
   def new
     @project = Project.new
   end
   
+  def create
+    @project = Project.create(project_params)
+    redirect_to project_path(@project)
+  end
+
+  def edit
+  end
+
+  def update
+    @project.update_attributes(project_params)
+    redirect_to project_path(@project)
+  end
+
   def show
     @project_defects = @project.defects.where(false_positive: false)
     @severe_defects = @project.defects.where(severity: "medium", false_positive: false)

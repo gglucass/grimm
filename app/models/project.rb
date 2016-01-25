@@ -1,3 +1,4 @@
+require 'csv'
 # id, name, external_id
 class Project < ActiveRecord::Base
   has_attached_file :requirements_document
@@ -17,5 +18,10 @@ class Project < ActiveRecord::Base
   end
 
   def process_attachment
+    self.stories.destroy_all()
+    CSV.foreach(self.requirements_document.path) do |row|
+      stories.create(title: row[0])
+    end
+    self.analyze()
   end
 end
