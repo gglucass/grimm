@@ -127,6 +127,7 @@ GEM
     passenger (5.0.20)
       rack
       rake (>= 0.8.1)
+    pg (0.18.3)
     pry (0.10.2)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -245,6 +246,7 @@ DEPENDENCIES
   jquery-rails
   mysql2 (~> 0.3.18)
   passenger
+  pg
   pry
   pundit
   rails (= 4.2.4)

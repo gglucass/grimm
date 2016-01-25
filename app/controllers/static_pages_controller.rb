@@ -5,7 +5,14 @@ class StaticPagesController < ApplicationController
 
   def index
     unless user_signed_in?
-      @project = Project.where(publik: true).order("RAND()").first
+      case ActiveRecord::Base.connection.instance_values["config"][:adapter]
+      when 'mysql'
+        @project = Project.where(publik: true).order("RAND()").first
+      when 'pg'
+        @project = Project.where(publik: true).order("RANDOM()").first
+      else
+        @project = Project.where(publik: true).first
+      end
     end
   end
 
