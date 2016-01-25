@@ -1,5 +1,8 @@
 class ProjectsController < ApplicationController
   before_action :set_and_authorize_project, only: [:show, :toggle_comments]
+  def new
+    @project = Project.new
+  end
   
   def show
     @project_defects = @project.defects.where(false_positive: false)
@@ -20,4 +23,9 @@ class ProjectsController < ApplicationController
     @project.toggle!(:create_comments)
     redirect_to project_path(@project)
   end
+
+  private
+    def project_params
+      params.require(:project).permit(:name, :requirements_document)
+    end
 end

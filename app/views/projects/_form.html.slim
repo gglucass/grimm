@@ -1,0 +1,11 @@
+- action = request[:action] == 'new' ? 'create' : 'update'
+= form_for(@project, url: {action: action}, html: { multipart: true }) do |f|
+  = f.label :name
+  = f.text_field :name
+  br
+  = f.label :requirements_document
+  = f.file_field :requirements_document
+
+  = f.hidden_field :kind, value: 'document'
+  br
+  = f.submit "Submit"

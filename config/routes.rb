@@ -17,7 +17,7 @@ Rails.application.routes.draw do
   post 'webhook' => 'static_pages#webhook'
   get 'instructions' => 'static_pages#instructions'
 
-  resources :projects, only: [:show] do
+  resources :projects, only: [:new, :create, :show, :edit, :update] do
     get 'toggle_comments'
   end
   
