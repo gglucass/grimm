@@ -33,7 +33,7 @@ en:
       new_user_session: "Sign in"
       destroy_user_session: "Sign out"
     application:
-      title: "Artisinal | User Stories" 
+      title: "Grimm | User Stories" 
 
   defect_comments:
     well_formed:
