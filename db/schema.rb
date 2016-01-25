@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151022182958) do
+ActiveRecord::Schema.define(version: 20160125110532) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -56,12 +56,16 @@ ActiveRecord::Schema.define(version: 20151022182958) do
   create_table "projects", force: :cascade do |t|
     t.string   "name"
     t.string   "external_id"
-    t.datetime "created_at",                                             null: false
-    t.datetime "updated_at",                                             null: false
-    t.text     "format",          default: "As a, I'm able to, So that"
+    t.datetime "created_at",                                                                null: false
+    t.datetime "updated_at",                                                                null: false
+    t.text     "format",                             default: "As a, I'm able to, So that"
     t.string   "kind"
-    t.boolean  "create_comments", default: false
-    t.boolean  "publik",          default: false
+    t.boolean  "create_comments",                    default: false
+    t.boolean  "publik",                             default: false
+    t.string   "requirements_document_file_name"
+    t.string   "requirements_document_content_type"
+    t.integer  "requirements_document_file_size"
+    t.datetime "requirements_document_updated_at"
   end
 
   create_table "projects_users", id: false, force: :cascade do |t|

@@ -3,6 +3,8 @@ center
     = "#{project.name} - "
     = pluralize(project.stories.count, "story")
   .btn.btn-default= link_to t(".toggle_comments_#{project.create_comments}"), project_toggle_comments_path(project.id)
+  - if project.kind == 'document'
+    .btn.btn-default= link_to t(".update_document"), edit_project_path(project.id)
 br
 .defect-blocks
   .left-defect-block

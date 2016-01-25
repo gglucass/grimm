@@ -1,5 +1,6 @@
 .content.index
   - if user_signed_in?
+    .btn.btn-default= link_to t(".new_project"), new_project_path
     - if current_user.integrations.any?
       h3="Projects"
       - current_user.projects.each do |project|
