@@ -47,8 +47,8 @@ class Integration < ActiveRecord::Base
       new_project.integrations << self
       new_project.save()
       project.issues.each do |issue|
-        new_project.stories.find_or_create_by(external_id: issue.id, title: issue.summary, 
-          priority: issue.priority.name, status: issue.status.name, comments: issue.comments.to_json, 
+        new_story = new_project.stories.find_or_create_by(external_id: issue.id, title: issue.summary) 
+        new_story.update_attributes(priority: issue.priority.name, status: issue.status.name, comments: issue.comments.to_json, 
           description: issue.description, estimation: issue.customfield_10008)
       end
       projects << new_project
