@@ -1,5 +1,6 @@
 # highlight, kind, subkind, severity, false_positive
 class Defect < ActiveRecord::Base
+  has_paper_trail
   belongs_to :story
   belongs_to :project
   has_many :comments, dependent: :destroy

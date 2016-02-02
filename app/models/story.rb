@@ -1,5 +1,6 @@
 # id, title, external_id
 class Story < ActiveRecord::Base
+  has_paper_trail
   belongs_to :project
   has_many :defects, dependent: :destroy
 

@@ -1,6 +1,7 @@
 require 'csv'
 # id, name, external_id
 class Project < ActiveRecord::Base
+  has_paper_trail
   has_attached_file :requirements_document
   validates_attachment :requirements_document, content_type: { content_type: 'text/csv'}
 

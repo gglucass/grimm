@@ -1,5 +1,6 @@
 class Integration < ActiveRecord::Base
   # kind, auth_info
+  has_paper_trail
   belongs_to :user
   serialize :auth_info
   after_create :sync_integration
