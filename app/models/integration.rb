@@ -38,7 +38,7 @@ class Integration < ActiveRecord::Base
     client = JIRA::Client.new(options)
     projects = []
     client.Project.all.each do |project|
-      new_project = Project.find_or_create_by(external_id: project.id, kind: self.kind)
+      new_project = Project.find_or_create_by(external_id: project.id, kind: self.kind, site_url: URI.parse(client.options[:site]).host)
       new_project.name ||= project.name
       new_project.users << user
       new_project.save()

@@ -11,7 +11,7 @@ class Webhook < ActiveRecord::Base
         Webhook.send("#{kind}_#{change[:change_type]}_#{change[:kind]}", change, project)
       end
     elsif kind == 'jira'
-      project = Project.find_by(external_id: data[:issue][:fields][:project][:id], kind: kind)
+      project = Project.find_by(external_id: data[:issue][:fields][:project][:id], kind: kind, site_url: URI.parse(data[:issue][:self]).host)
       Webhook.send("#{kind}_#{data['webhookEvent'].gsub('jira:',"")}", data, project)
     end
   end
