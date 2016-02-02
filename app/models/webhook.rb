@@ -1,6 +1,9 @@
-class Webhook
+#TODO: Fix DRY Stuff
+class Webhook < ActiveRecord::Base
+  serialize :json_string, JSON
   
   def self.parse(data)
+    Webhook.create(json_string: data)
     kind = data.has_key?('webhookEvent') ? 'jira' : 'pivotal'
     if kind == 'pivotal'
       project = Project.find_by(external_id: data[:project][:id], kind: kind)
