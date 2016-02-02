@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160125110532) do
+ActiveRecord::Schema.define(version: 20160202131718) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -53,6 +53,14 @@ ActiveRecord::Schema.define(version: 20160125110532) do
 
   add_index "integrations", ["user_id"], name: "index_integrations_on_user_id", using: :btree
 
+  create_table "integrations_projects", id: false, force: :cascade do |t|
+    t.integer "project_id"
+    t.integer "integration_id"
+  end
+
+  add_index "integrations_projects", ["integration_id"], name: "index_integrations_projects_on_integration_id", using: :btree
+  add_index "integrations_projects", ["project_id"], name: "index_integrations_projects_on_project_id", unique: true, using: :btree
+
   create_table "projects", force: :cascade do |t|
     t.string   "name"
     t.string   "external_id"
@@ -66,6 +74,7 @@ ActiveRecord::Schema.define(version: 20160125110532) do
     t.string   "requirements_document_content_type"
     t.integer  "requirements_document_file_size"
     t.datetime "requirements_document_updated_at"
+    t.string   "site_url"
   end
 
   create_table "projects_users", id: false, force: :cascade do |t|
@@ -85,6 +94,11 @@ ActiveRecord::Schema.define(version: 20160125110532) do
     t.text     "role"
     t.text     "means"
     t.text     "ends"
+    t.text     "priority"
+    t.text     "status"
+    t.text     "comments"
+    t.text     "description"
+    t.string   "estimation"
   end
 
   add_index "stories", ["project_id"], name: "index_stories_on_project_id", using: :btree
@@ -114,6 +128,23 @@ ActiveRecord::Schema.define(version: 20160125110532) do
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["integration_id"], name: "index_users_on_integration_id", using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
+
+  create_table "versions", force: :cascade do |t|
+    t.string   "item_type",  null: false
+    t.integer  "item_id",    null: false
+    t.string   "event",      null: false
+    t.string   "whodunnit"
+    t.text     "object"
+    t.datetime "created_at"
+  end
+
+  add_index "versions", ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id", using: :btree
+
+  create_table "webhooks", force: :cascade do |t|
+    t.text     "json_string"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
 
   add_foreign_key "comments", "defects"
   add_foreign_key "comments", "users"

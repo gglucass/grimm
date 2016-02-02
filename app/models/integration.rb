@@ -1,8 +1,11 @@
 class Integration < ActiveRecord::Base
   # kind, auth_info
+  has_paper_trail
   belongs_to :user
+  has_and_belongs_to_many :projects, -> { uniq }
   serialize :auth_info
   after_create :sync_integration
+
 
   def sync_integration
     eval("self.initialize_#{self.kind}")
@@ -15,6 +18,7 @@ class Integration < ActiveRecord::Base
       new_project = Project.find_or_create_by(external_id: project.id, kind: self.kind)
       new_project.name ||= project.name
       new_project.users << user
+      new_project.integrations << self
       new_project.save()
       project.stories.each do |story|
         new_project.stories.find_or_create_by(external_id: story.id, title: story.name)
@@ -37,20 +41,35 @@ class Integration < ActiveRecord::Base
     client = JIRA::Client.new(options)
     projects = []
     client.Project.all.each do |project|
-      new_project = Project.find_or_create_by(external_id: project.id, kind: self.kind)
+      new_project = Project.find_or_create_by(external_id: project.id, kind: self.kind, site_url: URI.parse(client.options[:site]).host)
       new_project.name ||= project.name
       new_project.users << user
+      new_project.integrations << self
       new_project.save()
       project.issues.each do |issue|
-        new_project.stories.find_or_create_by(external_id: issue.id, title: issue.summary)
+        new_story = new_project.stories.find_or_create_by(external_id: issue.id, title: issue.summary) 
+        new_story.update_attributes(priority: issue.priority.name, status: issue.status.name, comments: issue.comments.to_json, 
+          description: issue.description, estimation: issue.customfield_10008)
       end
       projects << new_project
     end
     projects.each { |p| p.reload.analyze() }
+    self.create_jira_webhook
     return self.user.projects
   end
 
   def create_pivotal_webhook(project)
     HTTP.headers('X-TrackerToken' => self.auth_info).post("https://www.pivotaltracker.com/services/v5/projects/#{project.external_id}/webhooks", form: {webhook_url: "#{ENV["HOSTNAME"]}/webhook", webhook_version: "v5"} )
+  end
+
+  def create_jira_webhook
+    HTTP.basic_auth(:user => self.auth_info['jira_username'], :pass => self.auth_info['jira_password']).headers('Content-Type' => 'application/json').post("#{self.auth_info['jira_url']}/rest/webhooks/1.0/webhook", json: { name: 'AQUSA webhook', 
+      url: "#{ENV["HOSTNAME"]}/webhook", 
+      events: ["jira:issue_created", "jira:issue_updated", "jira:issue_deleted", "jira:worklog_updated",
+            "sprint_created", "sprint_updated", "sprint_deleted", "sprint_started", "sprint_closed",
+            "board_created", "board_updated", "board_deleted", "board_configuration_changed",
+            "project_created", "project_updated", "project_deleted"],
+      jqlFilter: "", 
+      excludeIssueDetails: false})
   end
 end

@@ -6,6 +6,13 @@ class IntegrationsController < ApplicationController
     redirect_to root_path
   end
 
+  def destroy
+    user = User.find(params[:user_id])
+    integration = user.integrations.find(params[:id])
+    integration.destroy()
+    redirect_to user_path(user)
+  end
+
   def strong_params
     if params.require(:integration).permit(:kind)[:kind] == 'pivotal'
       return pivotal_params

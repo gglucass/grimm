@@ -1,5 +1,6 @@
 #external_id, text
 class Comment < ActiveRecord::Base
+  has_paper_trail
   belongs_to :defect
   belongs_to :user
 
