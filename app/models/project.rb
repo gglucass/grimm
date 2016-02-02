@@ -6,6 +6,7 @@ class Project < ActiveRecord::Base
   validates_attachment :requirements_document, content_type: { content_type: 'text/csv'}
 
   has_and_belongs_to_many :users, -> { uniq }
+  has_and_belongs_to_many :integrations, -> { uniq }
   has_many :defects
   has_many :stories, dependent: :destroy
 

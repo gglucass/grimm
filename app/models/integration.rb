@@ -6,6 +6,7 @@ class Integration < ActiveRecord::Base
   serialize :auth_info
   after_create :sync_integration
 
+
   def sync_integration
     eval("self.initialize_#{self.kind}")
   end
@@ -53,10 +54,22 @@ class Integration < ActiveRecord::Base
       projects << new_project
     end
     projects.each { |p| p.reload.analyze() }
+    self.create_jira_webhook
     return self.user.projects
   end
 
   def create_pivotal_webhook(project)
     HTTP.headers('X-TrackerToken' => self.auth_info).post("https://www.pivotaltracker.com/services/v5/projects/#{project.external_id}/webhooks", form: {webhook_url: "#{ENV["HOSTNAME"]}/webhook", webhook_version: "v5"} )
+  end
+
+  def create_jira_webhook
+    HTTP.basic_auth(:user => self.auth_info['jira_username'], :pass => self.auth_info['jira_password']).headers('Content-Type' => 'application/json').post("#{self.auth_info['jira_url']}/rest/webhooks/1.0/webhook", json: { name: 'AQUSA webhook', 
+      url: "#{ENV["HOSTNAME"]}/webhook", 
+      events: ["jira:issue_created", "jira:issue_updated", "jira:issue_deleted", "jira:worklog_updated",
+            "sprint_created", "sprint_updated", "sprint_deleted", "sprint_started", "sprint_closed",
+            "board_created", "board_updated", "board_deleted", "board_configuration_changed",
+            "project_created", "project_updated", "project_deleted"],
+      jqlFilter: "", 
+      excludeIssueDetails: false})
   end
 end
