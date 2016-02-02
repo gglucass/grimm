@@ -16,6 +16,7 @@ class Webhook < ActiveRecord::Base
     end
   end
 
+  ## PIVOTAL
   def self.pivotal_create_story(change, project)
     values = change[:new_values]
     story = Story.create(title: values[:name], project_id: project.id, external_id: values[:id])
@@ -38,24 +39,51 @@ class Webhook < ActiveRecord::Base
     return :ok
   end
 
+  ## JIRA
   def self.jira_issue_created(data, project)
-    story = Story.create(title: data[:issue][:fields][:summary], project_id: project.id, external_id: data[:issue][:id])
-    story.analyze()
+    case data[:issue][:fields][:issuetype][:name]
+    when 'Story'
+      story = Story.create(title: data[:issue][:fields][:summary], project_id: project.id, external_id: data[:issue][:id])
+      story.assign_attributes(Webhook.parse_jira_data(data))
+      story.save()
+      story.analyze()
+    end
   end
 
   def self.jira_issue_updated(data, project)
-    story = Story.where(project_id: project.id, external_id: data[:issue][:id]).first
-    unless story.title == data[:issue][:fields][:summary]
-      story.title = data[:issue][:fields][:summary]
-      if story.save()
-        story.analyze()
+    case data[:issue][:fields][:issuetype][:name]
+    when 'Story'
+      story = Story.where(project_id: project.id, external_id: data[:issue][:id]).first
+      story.assign_attributes(Webhook.parse_jira_data(data))
+      if story.changed?
+        if story.title_changed?
+          story.save()
+          story.analyze()
+        else
+          story.save
+        end
       end
     end
   end
 
   def self.jira_issue_deleted(data, project)
-    story = Story.where(project_id: project.id, external_id: data[:issue][:id]).first
-    story.destroy()
+    case data[:issue][:fields][:issuetype][:name]
+    when 'Story'
+      story = Story.where(project_id: project.id, external_id: data[:issue][:id]).first
+      story.destroy()
+    end
     return :ok
+  end
+
+  def self.parse_jira_data(data)
+    data = data[:issue][:fields]
+    priority = data[:priority][:name]
+    status = data[:status][:name]
+    title = data[:summary]
+    comments = data[:comment]
+    description = data[:description]
+    estimation = data[:customfield_10008]
+    { priority: priority, status: status, title: title, comments: comments, 
+      description: description, estimation: estimation }
   end
 end
