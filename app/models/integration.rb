@@ -2,6 +2,7 @@ class Integration < ActiveRecord::Base
   # kind, auth_info
   has_paper_trail
   belongs_to :user
+  has_and_belongs_to_many :projects, -> { uniq }
   serialize :auth_info
   after_create :sync_integration
 
@@ -16,6 +17,7 @@ class Integration < ActiveRecord::Base
       new_project = Project.find_or_create_by(external_id: project.id, kind: self.kind)
       new_project.name ||= project.name
       new_project.users << user
+      new_project.integrations << self
       new_project.save()
       project.stories.each do |story|
         new_project.stories.find_or_create_by(external_id: story.id, title: story.name)
@@ -41,6 +43,7 @@ class Integration < ActiveRecord::Base
       new_project = Project.find_or_create_by(external_id: project.id, kind: self.kind, site_url: URI.parse(client.options[:site]).host)
       new_project.name ||= project.name
       new_project.users << user
+      new_project.integrations << self
       new_project.save()
       project.issues.each do |issue|
         new_project.stories.find_or_create_by(external_id: issue.id, title: issue.summary, 

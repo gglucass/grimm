@@ -30,11 +30,23 @@ h2
 
 h3 Current Integrations
 - @integrations.each_with_index do |integration, index|
-  = simple_form_for [@user, integration] do |f|
-    b
-     i= "Integration #{index+1}: #{integration.kind}" 
-    = f.input :auth_info, as: :string
-    = f.button :submit
+  i= "Integration #{index+1}: #{integration.kind}" 
+  - case integration.kind
+    - when 'pivotal'
+      p
+        b="Pivotal authentication key: "
+        = integration.auth_info
+    - when 'jira'
+      p
+        b= "jira url: "
+        = integration.auth_info[:jira_url]
+        br
+        b= "authenticated jira username: "
+        = integration.auth_info[:jira_username]
+        br
+  = simple_form_for [@user, integration], method: :delete do |f|
+    = f.button :submit, 'Delete Integration'
+  br
 
 h3 Add Jira integration
 = simple_form_for [@user, @integrations.new] do |f|
