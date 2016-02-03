@@ -47,6 +47,7 @@ class Webhook < ActiveRecord::Base
       story.assign_attributes(Webhook.parse_jira_data(data))
       story.save()
       story.analyze()
+    when 'Project'
     end
   end
 
@@ -63,6 +64,7 @@ class Webhook < ActiveRecord::Base
           story.save
         end
       end
+    when 'Project'
     end
   end
 
@@ -71,6 +73,7 @@ class Webhook < ActiveRecord::Base
     when 'Story'
       story = Story.where(project_id: project.id, external_id: data[:issue][:id]).first
       story.destroy()
+    when 'Project'
     end
     return :ok
   end
