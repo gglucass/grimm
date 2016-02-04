@@ -4,8 +4,12 @@ class Integration < ActiveRecord::Base
   belongs_to :user
   has_and_belongs_to_many :projects, -> { uniq }
   serialize :auth_info
+  after_create :sanitize_site_url
   after_create :sync_integration
 
+  def sanitize_site_url
+    self.update_attribute(:site_url, URI.parse(self.site_url).host)
+  end
 
   def sync_integration
     eval("self.initialize_#{self.kind}")

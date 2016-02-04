@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160202131718) do
+ActiveRecord::Schema.define(version: 20160204164932) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -49,6 +49,7 @@ ActiveRecord::Schema.define(version: 20160202131718) do
     t.string   "kind"
     t.text     "auth_info"
     t.integer  "user_id"
+    t.string   "site_url"
   end
 
   add_index "integrations", ["user_id"], name: "index_integrations_on_user_id", using: :btree

@@ -39,7 +39,7 @@ h3 Current Integrations
     - when 'jira'
       p
         b= "jira url: "
-        = integration.auth_info[:jira_url]
+        = integration.site_url
         br
         b= "authenticated jira username: "
         = integration.auth_info[:jira_username]
@@ -51,8 +51,8 @@ h3 Current Integrations
 h3 Add Jira integration
 = simple_form_for [@user, @integrations.new] do |f|
   = f.hidden_field :kind, value: 'jira'
+  = f.input :site_url
   = f.simple_fields_for :auth_info do |a|  
-    = a.input :jira_url, as: :string
     = a.input :jira_username, as: :string
     = a.input :jira_password, as: :password
   = f.button :submit

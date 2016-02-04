@@ -28,7 +28,7 @@ class Defect < ActiveRecord::Base
     user = self.project.users.first
     integration = user.integrations.where(kind: 'jira').first
     options = {
-      site: integration.auth_info["jira_url"],
+      site: 'https://' + integration.site_url,
       context_path: '',
       auth_type: :basic,
       username: integration.auth_info["jira_username"],
