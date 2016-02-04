@@ -35,8 +35,8 @@ p
 h3= Add Jira integration
 = form_for([resource, resource.integrations], as: 'integration', url: integrations_path, method: :post) do |f|
   .field
-    = f.label :jira_url
-    = f.text_field :jira_url
+    = f.label :site_url
+    = f.text_field :site_url
   .field
     = f.label :jira_username
     br/

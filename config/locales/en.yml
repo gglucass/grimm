@@ -60,6 +60,8 @@ en:
       punctuation_explanation: "User stories should not include additional information aside from core user story text. Move this to the description."
       brackets: "Not minimal"
       brackets_explanation: "User stories should not include additional information hidden in brackets."
+      indicator_repetition: "Indicator Repetition"
+      indicator_repetition_explanation: "This user story contains two or more role, means or ends indicators"
     uniform:
       uniform: "Irregular format"
       uniform_explanation: "This user story its format deviates from the format used by the majority of your user stories"

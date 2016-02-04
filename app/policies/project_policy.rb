@@ -30,4 +30,9 @@ class ProjectPolicy
   def toggle_comments?
     @project.users.include?(@current_user)
   end
+
+  def analyze?
+    @project.users.include?(@current_user)
+  end
+
 end

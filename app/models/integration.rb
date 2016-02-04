@@ -4,8 +4,13 @@ class Integration < ActiveRecord::Base
   belongs_to :user
   has_and_belongs_to_many :projects, -> { uniq }
   serialize :auth_info
+  after_create :sanitize_site_url
   after_create :sync_integration
+  after_create :create_jira_webhook
 
+  def sanitize_site_url
+    self.update_attribute(:site_url, URI.parse(self.site_url).host)
+  end
 
   def sync_integration
     eval("self.initialize_#{self.kind}")
@@ -17,8 +22,8 @@ class Integration < ActiveRecord::Base
     client.projects.each do |project|
       new_project = Project.find_or_create_by(external_id: project.id, kind: self.kind)
       new_project.name ||= project.name
-      new_project.users << user
-      new_project.integrations << self
+      new_project.users += [user]
+      new_project.integrations += [self]
       new_project.save()
       project.stories.each do |story|
         new_project.stories.find_or_create_by(external_id: story.id, title: story.name)
@@ -32,7 +37,7 @@ class Integration < ActiveRecord::Base
 
   def initialize_jira
     options = {
-      site: self.auth_info["jira_url"],
+      site: 'https://' + self.site_url,
       context_path: '',
       auth_type: :basic,
       username: self.auth_info["jira_username"],
@@ -43,8 +48,8 @@ class Integration < ActiveRecord::Base
     client.Project.all.each do |project|
       new_project = Project.find_or_create_by(external_id: project.id, kind: self.kind, site_url: URI.parse(client.options[:site]).host)
       new_project.name ||= project.name
-      new_project.users << user
-      new_project.integrations << self
+      new_project.users += [user]
+      new_project.integrations += [self]
       new_project.save()
       project.issues.each do |issue|
         new_story = new_project.stories.find_or_create_by(external_id: issue.id, title: issue.summary) 
@@ -54,7 +59,6 @@ class Integration < ActiveRecord::Base
       projects << new_project
     end
     projects.each { |p| p.reload.analyze() }
-    self.create_jira_webhook
     return self.user.projects
   end
 
@@ -63,13 +67,15 @@ class Integration < ActiveRecord::Base
   end
 
   def create_jira_webhook
-    HTTP.basic_auth(:user => self.auth_info['jira_username'], :pass => self.auth_info['jira_password']).headers('Content-Type' => 'application/json').post("#{self.auth_info['jira_url']}/rest/webhooks/1.0/webhook", json: { name: 'AQUSA webhook', 
-      url: "#{ENV["HOSTNAME"]}/webhook", 
-      events: ["jira:issue_created", "jira:issue_updated", "jira:issue_deleted", "jira:worklog_updated",
-            "sprint_created", "sprint_updated", "sprint_deleted", "sprint_started", "sprint_closed",
-            "board_created", "board_updated", "board_deleted", "board_configuration_changed",
-            "project_created", "project_updated", "project_deleted"],
-      jqlFilter: "", 
-      excludeIssueDetails: false})
+    if self.kind == 'jira'
+      HTTP.basic_auth(:user => self.auth_info['jira_username'], :pass => self.auth_info['jira_password']).headers('Content-Type' => 'application/json').post("https://#{self.site_url}/rest/webhooks/1.0/webhook", json: { name: 'AQUSA webhook', 
+        url: "#{ENV["HOSTNAME"]}/webhook", 
+        events: ["jira:issue_created", "jira:issue_updated", "jira:issue_deleted", "jira:worklog_updated",
+              "sprint_created", "sprint_updated", "sprint_deleted", "sprint_started", "sprint_closed",
+              "board_created", "board_updated", "board_deleted", "board_configuration_changed",
+              "project_created", "project_updated", "project_deleted"],
+        jqlFilter: "", 
+        excludeIssueDetails: false})
+    end
   end
 end

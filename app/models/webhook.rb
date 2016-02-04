@@ -11,8 +11,7 @@ class Webhook < ActiveRecord::Base
         Webhook.send("#{kind}_#{change[:change_type]}_#{change[:kind]}", change, project)
       end
     elsif kind == 'jira'
-      project = Project.find_by(external_id: data[:issue][:fields][:project][:id], kind: kind, site_url: URI.parse(data[:issue][:self]).host)
-      Webhook.send("#{kind}_#{data['webhookEvent'].gsub('jira:',"")}", data, project)
+      Webhook.send("#{kind}_#{data['webhookEvent'].gsub('jira:',"")}", data)
     end
   end
 
@@ -39,42 +38,33 @@ class Webhook < ActiveRecord::Base
     return :ok
   end
 
-  ## JIRA
-  def self.jira_issue_created(data, project)
-    case data[:issue][:fields][:issuetype][:name]
-    when 'Story'
-      story = Story.create(title: data[:issue][:fields][:summary], project_id: project.id, external_id: data[:issue][:id])
-      story.assign_attributes(Webhook.parse_jira_data(data))
-      story.save()
-      story.analyze()
-    when 'Project'
-    end
+  ## JIRA Issue
+  def self.jira_issue_created(data)
+    project = Project.find_by(external_id: data[:issue][:fields][:project][:id], site_url: URI.parse(data[:issue][:self]).host)
+    story = Story.create(title: data[:issue][:fields][:summary], project_id: project.id, external_id: data[:issue][:id])
+    story.assign_attributes(Webhook.parse_jira_data(data))
+    story.save()
+    story.analyze()
   end
 
-  def self.jira_issue_updated(data, project)
-    case data[:issue][:fields][:issuetype][:name]
-    when 'Story'
-      story = Story.where(project_id: project.id, external_id: data[:issue][:id]).first
-      story.assign_attributes(Webhook.parse_jira_data(data))
-      if story.changed?
-        if story.title_changed?
-          story.save()
-          story.analyze()
-        else
-          story.save
-        end
+  def self.jira_issue_updated(data)
+    project = Project.find_by(external_id: data[:issue][:fields][:project][:id], site_url: URI.parse(data[:issue][:self]).host)
+    story = Story.where(project_id: project.id, external_id: data[:issue][:id]).first
+    story.assign_attributes(Webhook.parse_jira_data(data))
+    if story.changed?
+      if story.title_changed?
+        story.save()
+        story.analyze()
+      else
+        story.save
       end
-    when 'Project'
     end
   end
 
-  def self.jira_issue_deleted(data, project)
-    case data[:issue][:fields][:issuetype][:name]
-    when 'Story'
-      story = Story.where(project_id: project.id, external_id: data[:issue][:id]).first
-      story.destroy()
-    when 'Project'
-    end
+  def self.jira_issue_deleted(data)
+    project = Project.find_by(external_id: data[:issue][:fields][:project][:id], site_url: URI.parse(data[:issue][:self]).host)
+    story = Story.where(project_id: project.id, external_id: data[:issue][:id]).first
+    story.destroy()
     return :ok
   end
 
@@ -88,5 +78,27 @@ class Webhook < ActiveRecord::Base
     estimation = data[:customfield_10008]
     { priority: priority, status: status, title: title, comments: comments, 
       description: description, estimation: estimation }
+  end
+
+  ## JIRA Project
+
+  def self.jira_project_created(data)
+    site_url = URI.parse(data[:project][:self]).host
+    require 'pry';binding.pry
+    integrations = Integration.where(site_url: site_url)
+    integrations.each do |integration|
+      integration.sync_integration()
+    end
+  end
+
+  def self.jira_project_deleted(data)
+    project = Project.find_by(external_id: data[:project][:id], site_url: URI.parse(data[:project][:self]).host)
+    project.delete()
+  end
+
+  def self.jira_project_updated(data)
+    project = Project.find_by(external_id: data[:project][:id], site_url: URI.parse(data[:project][:self]).host)
+    project.name = data[:project][:name]
+    project.save()
   end
 end
