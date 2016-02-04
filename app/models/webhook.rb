@@ -84,7 +84,6 @@ class Webhook < ActiveRecord::Base
 
   def self.jira_project_created(data)
     site_url = URI.parse(data[:project][:self]).host
-    require 'pry';binding.pry
     integrations = Integration.where(site_url: site_url)
     integrations.each do |integration|
       integration.sync_integration()
