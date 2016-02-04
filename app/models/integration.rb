@@ -67,7 +67,7 @@ class Integration < ActiveRecord::Base
   end
 
   def create_jira_webhook
-    if self.kind == 'jira'
+    if self.kind == 'jira' and Integration.where(site_url: self.site_url).count <= 1
       HTTP.basic_auth(:user => self.auth_info['jira_username'], :pass => self.auth_info['jira_password']).headers('Content-Type' => 'application/json').post("https://#{self.site_url}/rest/webhooks/1.0/webhook", json: { name: 'AQUSA webhook', 
         url: "#{ENV["HOSTNAME"]}/webhook", 
         events: ["jira:issue_created", "jira:issue_updated", "jira:issue_deleted", "jira:worklog_updated",
