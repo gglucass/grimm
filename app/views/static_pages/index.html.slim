@@ -3,7 +3,7 @@
     .btn.btn-default= link_to t(".new_project"), new_project_path
     - if current_user.integrations.any?
       h3="Projects"
-      - current_user.projects.each do |project|
+      - current_user.projects.order('name').each do |project|
         h4
           = link_to project.name, project_path(project)
 

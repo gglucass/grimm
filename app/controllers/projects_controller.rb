@@ -1,5 +1,5 @@
 class ProjectsController < ApplicationController
-  before_action :set_and_authorize_project, only: [:show, :edit, :update, :toggle_comments]
+  before_action :set_and_authorize_project, only: [:show, :edit, :update, :toggle_comments, :analyze]
 
   def new
     @project = Project.new
@@ -25,8 +25,8 @@ class ProjectsController < ApplicationController
 
   def show
     @project_defects = @project.defects.where(false_positive: false)
-    @severe_defects = @project.defects.where(severity: "medium", false_positive: false)
-    @medium_defects = @project.defects.where(severity: "high", false_positive: false)
+    @severe_defects = @project.defects.where(severity: "high", false_positive: false)
+    @medium_defects = @project.defects.where(severity: "medium", false_positive: false)
     @minor_defects = @project.defects.where(severity: "minor", false_positive: false)
     @false_positives = @project.defects.where(false_positive: true)
     @perfect_stories = Story.includes(:defects).where(defects: {id: nil}, project_id: @project.id)
@@ -40,6 +40,11 @@ class ProjectsController < ApplicationController
 
   def toggle_comments
     @project.toggle!(:create_comments)
+    redirect_to project_path(@project)
+  end
+
+  def analyze
+    @project.analyze()
     redirect_to project_path(@project)
   end
 

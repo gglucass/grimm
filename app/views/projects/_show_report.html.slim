@@ -2,9 +2,11 @@ center
   h1
     = "#{project.name} - "
     = pluralize(project.stories.count, "story")
-  .btn.btn-default= link_to t(".toggle_comments_#{project.create_comments}"), project_toggle_comments_path(project.id)
+  .btn.btn-default= link_to t(".re_analyze"), project_analyze_path(project.id)
   - if project.kind == 'document'
     .btn.btn-default= link_to t(".update_document"), edit_project_path(project.id)
+  - else
+    .btn.btn-default= link_to t(".toggle_comments_#{project.create_comments}"), project_toggle_comments_path(project.id)
 br
 .defect-blocks
   .left-defect-block
@@ -55,7 +57,7 @@ br
     ul.story_report
       - stories.each_with_index do |story, index| 
         li.perfect-story
-          h4.story-title= "#" + index.to_s
+          h4.story-title= "#" + story.id.to_s
           h4.edit.story-title id="#{story.id}"= " #{story.title}"
 - else
   .story_report
