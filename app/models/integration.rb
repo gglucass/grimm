@@ -7,6 +7,7 @@ class Integration < ActiveRecord::Base
   after_create :sanitize_site_url
   after_create :sync_integration
   after_create :create_jira_webhook
+  before_destroy :remove_user_from_projects
 
   def sanitize_site_url
     self.update_attribute(:site_url, URI.parse(self.site_url).host)
@@ -76,6 +77,12 @@ class Integration < ActiveRecord::Base
               "project_created", "project_updated", "project_deleted"],
         jqlFilter: "", 
         excludeIssueDetails: false})
+    end
+  end
+
+  def remove_user_from_projects
+    self.projects.each do |project|
+      project.users -= [self.user]
     end
   end
 end
