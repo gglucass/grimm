@@ -22,9 +22,9 @@
 en:
   static_pages:
     index:
-      welcome: "Write perfect user stories"
+      welcome: "Create perfect user stories"
       tag_line: "Automated user story review that notifies you of all preventable errors"
-      explanation_html: "StoryForge is a consumer-friendly version of the academic %{href} project. This version allows you to easily plug-in your Jira or PivotalTracker information and receive error reports in real-time."
+      explanation_html: "Grimm is a consumer-friendly version of the academic %{href} project. This version allows you to easily plug-in your Jira  information and receive error reports in real-time as comments on your issues."
       call_to_action: "Sign up with email"
   layouts:
     header:
@@ -51,22 +51,22 @@ en:
       no_means: "No action"
       no_role: "No role"
       content_means: "Action incomplete"
-      content_means_explanation: "Although the format indicates this user story contains an action, it looks like we're missing either a verb or a noun"
+      content_means_explanation: "Are you sure this user story includes an action? Our analysis shows we're missing either a verb or a noun."
       content_role: "Role incomplete"
-      content_means_explanation: "Although the format indicates this user story contains a role it look like there is no noun"
+      content_means_explanation: "Are you sure you included a role?"
     atomic:
       conjunctions: "Not atomic"
-      conjunctions_explanation: "A user story should consist of only one feature, avoid using conjunctions such as and or &"
+      conjunctions_explanation: "A user story should consist of only one feature. Avoid using conjunctions such as and or &."
     unique:
       identical: "Duplication"
-      identical_explanation: "User stories should not be identical to one another"
+      identical_explanation: "There is another user story in this set identical to this one. Why not remove one?"
     minimal:
       punctuation: "Not minimal"
-      punctuation_explanation: "User stories should not include additional information aside from core user story text. Move this to the description."
+      punctuation_explanation: "User stories should not include additional information aside from core user story text. Move this to the description, acceptance criteria or comments."
       brackets: "Not minimal"
-      brackets_explanation: "User stories should not include additional information hidden in brackets."
+      brackets_explanation: "User stories should not include additional information hidden in brackets. Move this to the description, acceptance criteria or comments."
       indicator_repetition: "Indicator Repetition"
-      indicator_repetition_explanation: "This user story contains two or more role, means or ends indicators"
+      indicator_repetition_explanation: "This user story contains multiple roles or actions. You should split these in separate user stories."
     uniform:
       uniform: "Irregular format"
       uniform_explanation: "This user story its format deviates from the format used by the majority of your user stories"
