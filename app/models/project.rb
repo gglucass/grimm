@@ -12,11 +12,18 @@ class Project < ActiveRecord::Base
 
   after_save :process_attachment, if: Proc.new { |a| a.requirements_document_updated_at_changed? }
 
-  def analyze
+  def analyze(first_analysis: false)
     Defect.where(project_id: self.id, false_positive: false).each do |defect|
       defect.destroy()
     end
-    Thread.start { HTTP.get("http://127.0.0.1:5000/project/#{self.id}/analyze") }
+    Thread.start { 
+      result = HTTP.get("http://127.0.0.1:5000/project/#{self.id}/analyze")
+      result = JSON.parse(result.body.readpartial)
+      if result["success"] == true and first_analysis == true
+        self.create_comments = true
+        self.save()
+      end
+    }
   end
 
   def process_attachment

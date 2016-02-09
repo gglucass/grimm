@@ -34,7 +34,12 @@ en:
       destroy_user_session: "Sign out"
     application:
       title: "Grimm | User Stories" 
-
+  projects:
+    show_report:
+      update_document: "Re-upload story CSV"
+      re_analyze: "Redo analysis"
+      toggle_comments_false: "Turn comments on"
+      toggle_comments_true: "Turn comments off"
   defect_comments:
     well_formed:
       no_means_comma_explanation: "The user story is well-formed, but it's good practice to add a comma between the role and action segments"
@@ -66,7 +71,3 @@ en:
       uniform: "Irregular format"
       uniform_explanation: "This user story its format deviates from the format used by the majority of your user stories"
     reports: "Grimm Reports"
-  projects:
-    show:
-      toggle_comments_false: "Turn comments on"
-      toggle_comments_true: "Turn comments off"

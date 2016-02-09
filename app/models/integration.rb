@@ -32,7 +32,7 @@ class Integration < ActiveRecord::Base
       projects << new_project
       self.create_pivotal_webhook(new_project)
     end
-    projects.each { |p| p.reload.analyze() }
+    projects.each { |p| p.reload.analyze(first_analysis: true) }
     return self.user.projects
   end
 
