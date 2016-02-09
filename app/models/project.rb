@@ -28,8 +28,10 @@ class Project < ActiveRecord::Base
 
   def process_attachment
     self.stories.destroy_all()
+    index = 0
     CSV.foreach(self.requirements_document.path) do |row|
-      stories.create(title: row[0])
+      stories.create(title: row[0], external_id: index)
+      index += 1
     end
     self.analyze()
   end
