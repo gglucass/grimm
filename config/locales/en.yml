@@ -26,6 +26,7 @@ en:
       tag_line: "Automated user story review that notifies you of all preventable errors"
       explanation_html: "Grimm is a consumer-friendly version of the academic %{href} project. This version allows you to easily plug-in your Jira  information and receive error reports in real-time as comments on your issues."
       call_to_action: "Sign up with email"
+      new_project: "New static project (CSV)"
   layouts:
     header:
       home: "Home"
@@ -71,3 +72,6 @@ en:
       uniform: "Irregular format"
       uniform_explanation: "This user story its format deviates from the format used by the majority of your user stories"
     reports: "Grimm Reports"
+  users:
+    form:
+      instructions: (how to)

@@ -26,7 +26,7 @@ h2
     br/
     = f.password_field :current_password, autocomplete: "off"
   .actions
-    = f.submit "Update"
+    = f.submit "Update user", class: 'btn btn-default'
 
 h3 Current Integrations
 - @integrations.each_with_index do |integration, index|
@@ -48,7 +48,9 @@ h3 Current Integrations
     = f.button :submit, 'Delete Integration'
   br
 
-h3 Add Jira integration
+h3 
+  = "Add Jira integration "
+  = link_to t(".instructions"), instructions_path
 = simple_form_for [@user, @integrations.new] do |f|
   = f.hidden_field :kind, value: 'jira'
   = f.input :site_url
@@ -57,7 +59,7 @@ h3 Add Jira integration
     = a.input :jira_password, as: :password
   = f.button :submit
 
-h3 Add Pivotal integration
+h3 Add Pivotal integration (incomplete)
 = simple_form_for [@user, @integrations.new] do |f|
   = f.hidden_field :kind, value: 'pivotal'
   = f.input :auth_info, as: :string

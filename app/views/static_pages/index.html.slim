@@ -1,7 +1,7 @@
 .content.index
   - if user_signed_in?
-    .btn.btn-default= link_to t(".new_project"), new_project_path
     - if current_user.integrations.any?
+      .btn.btn-default= link_to "Jira Integrations", user_path(current_user)
       h3="Projects"
       - current_user.projects.order('name').each do |project|
         h4
@@ -12,14 +12,16 @@
       h4
         em=t('.tag_line')
       p
-        = "To start using Grimm, provide your JIRA/Pivotal credentials: "
+        = "To start using Grimm, provide your JIRA credentials: "
         = link_to "edit account", user_path(current_user)
+        
     - if current_user.admin?
       h3
         u="All projects"
       - Project.all.each do |project|
         h4
           = link_to project.name, project_path(project)
+    .btn.btn-default= link_to t(".new_project"), new_project_path
   
   - else
     h2=t('.welcome')
