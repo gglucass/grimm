@@ -55,7 +55,10 @@ class Integration < ActiveRecord::Base
       project.issues.each do |issue|
         new_story = new_project.stories.find_or_create_by(external_id: issue.id, title: issue.summary) 
         new_story.update_attributes(priority: issue.priority.name, status: issue.status.name, comments: issue.comments.to_json, 
-          description: issue.description, estimation: issue.customfield_10008)
+          description: issue.description)
+        if issue.try(:customfield_10008)
+          new_story.update_attributes(estimation: issue.customfield_10008)
+        end
       end
       projects << new_project
     end
