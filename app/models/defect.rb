@@ -12,21 +12,20 @@ class Defect < ActiveRecord::Base
   end
 
   def create_pivotal_comment
-    user = self.project.users.first
-    client = TrackerApi::Client.new(token: user.integrations.where(kind: 'pivotal').first.auth_info)
+    integration = self.project.integrations.where(kind: 'pivotal').first
+    client = TrackerApi::Client.new(token: integration.auth_info)
     project = client.project(self.project.external_id)
     story = project.story(self.story.external_id)
     text = "__" + I18n.t("defect_comments.#{self.kind}.#{self.subkind}") + "__\n" + I18n.t("defect_comments.#{self.kind}.#{self.subkind}_explanation") + "\n" + "__Suggestion__: " + self.highlight
 
     response = client.post("/projects/#{project.id}/stories/#{story.id}/comments", params: {text: text})
     if response
-      self.comments.create(external_id: response.body['id'], text: response.body['text'], user: user)
+      self.comments.create(external_id: response.body['id'], text: response.body['text'], user: integration.user)
     end
   end
 
   def create_jira_comment
-    user = self.project.users.first
-    integration = user.integrations.where(kind: 'jira').first
+    integration = self.project.integrations.where(kind: 'jira').first
     options = {
       site: 'https://' + integration.site_url,
       context_path: '',
@@ -38,9 +37,15 @@ class Defect < ActiveRecord::Base
     issue = client.Issue.find(self.story.external_id)
     text = "*:" + I18n.t("defect_comments.reports") + I18n.t("defect_comments.#{self.kind}.#{self.subkind}") + "*\n" + I18n.t("defect_comments.#{self.kind}.#{self.subkind}_explanation") + "\n" + "*Suggestion*: " + self.highlight
     comment = issue.comments.build
-    comment.save({'body': text})
+    if integration.jira_visibility
+      comment.save({'body': text, 
+        "visibility": {"type": "role", "value": integration.jira_visibility}
+        })
+    else
+      comment.save({'body': text})
+    end
     if comment.id
-      self.comments.create(external_id: comment.id, text: comment.body, user: user)
+      self.comments.create(external_id: comment.id, text: comment.body, user: integration.user)
     end
   end
 end

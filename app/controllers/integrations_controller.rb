@@ -22,7 +22,7 @@ class IntegrationsController < ApplicationController
   end
 
   def jira_params
-    params.require(:integration).permit(:kind, :site_url, :auth_info => [:jira_username, :jira_password])
+    params.require(:integration).permit(:kind, :site_url, :jira_visibility, :auth_info => [:jira_username, :jira_password])
   end
 
   def pivotal_params
