@@ -43,9 +43,10 @@ h3 Current Integrations
         br
         b= "authenticated jira username: "
         = integration.auth_info[:jira_username]
-        br
-        b= "Jira visibility: "
-        = integration.jira_visibility
+        - if params["advanced"]
+          br
+          b= "Jira visibility: "
+          = integration.jira_visibility
   = simple_form_for [@user, integration], method: :delete do |f|
     = f.button :submit, 'Delete Integration'
   br
@@ -59,8 +60,9 @@ h3
   = f.simple_fields_for :auth_info do |a|  
     = a.input :jira_username, as: :string
     = a.input :jira_password, as: :password
-  = f.input :jira_visibility, label: 'Restrict comment visibility to project role (handle with care, instructions coming soon)'
-  br
+  - if params["advanced"]
+    = f.input :jira_visibility, label: 'Restrict comment visibility to project role (handle with care, instructions coming soon)'
+    br
   = f.button :submit
 
 h3 Add Pivotal integration (incomplete)
