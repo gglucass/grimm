@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160204164932) do
+ActiveRecord::Schema.define(version: 20160215161625) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,12 +44,13 @@ ActiveRecord::Schema.define(version: 20160204164932) do
   add_index "defects", ["story_id"], name: "index_defects_on_story_id", using: :btree
 
   create_table "integrations", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
     t.string   "kind"
     t.text     "auth_info"
     t.integer  "user_id"
     t.string   "site_url"
+    t.string   "jira_visibility"
   end
 
   add_index "integrations", ["user_id"], name: "index_integrations_on_user_id", using: :btree
