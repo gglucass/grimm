@@ -39,7 +39,7 @@ class Defect < ActiveRecord::Base
     comment = issue.comments.build
     if integration.jira_visibility
       comment.save({'body': text, 
-        "visibility": {"type": "role", "value": integration.jira_visibility}
+        "visibility": {"type": "group", "value": integration.jira_visibility}
         })
     else
       comment.save({'body': text})
