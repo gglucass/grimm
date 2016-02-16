@@ -65,7 +65,7 @@ class Integration < ActiveRecord::Base
           new_story.update_attributes(estimation: issue.customfield_10008)
         end
       end
-      if new_record_project?
+      if new_record_project
         new_project.reload.analyze(first_analysis: true)
       end
     end
