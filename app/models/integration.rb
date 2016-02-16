@@ -52,7 +52,8 @@ class Integration < ActiveRecord::Base
       new_project.users += [user]
       new_project.integrations += [self]
       new_project.save()
-      project.issues.each do |issue|
+      issues = project.issues.select { |i| i.issuetype.name == 'Story' }
+      issues.each do |issue|
         new_story = new_project.stories.find_or_create_by(external_id: issue.id, title: issue.summary) 
         new_story.update_attributes(priority: issue.priority.name, status: issue.status.name, comments: issue.comments.to_json, 
           description: issue.description)
@@ -64,6 +65,17 @@ class Integration < ActiveRecord::Base
     end
     projects.each { |p| p.reload.analyze() }
     return self.user.projects
+  end
+
+  def initialize_jira_client
+    options = {
+      site: 'https://' + self.site_url,
+      context_path: '',
+      auth_type: :basic,
+      username: self.auth_info["jira_username"],
+      password: self.auth_info["jira_password"]
+    }    
+    return JIRA::Client.new(options)
   end
 
   def create_pivotal_webhook(project)
@@ -86,6 +98,8 @@ class Integration < ActiveRecord::Base
   def remove_user_from_projects
     self.projects.each do |project|
       project.users -= [self.user]
+      if project.users.count == 0
+        project.destroy()
     end
   end
 end
