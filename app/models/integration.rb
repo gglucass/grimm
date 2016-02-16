@@ -45,25 +45,30 @@ class Integration < ActiveRecord::Base
       password: self.auth_info["jira_password"]
     }
     client = JIRA::Client.new(options)
-    projects = []
     client.Project.all.each do |project|
-      new_project = Project.find_or_create_by(external_id: project.id, kind: self.kind, site_url: URI.parse(client.options[:site]).host)
+      new_project = Project.find_or_initialize_by(external_id: project.id, kind: self.kind, site_url: URI.parse(client.options[:site]).host)
       new_project.name ||= project.name
       new_project.users += [user]
       new_project.integrations += [self]
+      new_record_project = new_project.new_record?
       new_project.save()
       issues = project.issues.select { |i| i.issuetype.name == 'Story' }
       issues.each do |issue|
-        new_story = new_project.stories.find_or_create_by(external_id: issue.id, title: issue.summary) 
+        new_story = new_project.stories.find_or_initialize_by(external_id: issue.id, title: issue.summary) 
+        if new_story.new_record?
+          new_story.save()
+          new_story.analyze()
+        end
         new_story.update_attributes(priority: issue.priority.name, status: issue.status.name, comments: issue.comments.to_json, 
           description: issue.description)
         if issue.try(:customfield_10008)
           new_story.update_attributes(estimation: issue.customfield_10008)
         end
       end
-      projects << new_project
+      if new_record_project?
+        new_project.reload.analyze(first_analysis: true)
+      end
     end
-    projects.each { |p| p.reload.analyze() }
     return self.user.projects
   end
 
