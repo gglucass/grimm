@@ -100,6 +100,7 @@ class Integration < ActiveRecord::Base
       project.users -= [self.user]
       if project.users.count == 0
         project.destroy()
+      end
     end
   end
 end
