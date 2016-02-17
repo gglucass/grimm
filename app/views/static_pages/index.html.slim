@@ -1,6 +1,6 @@
 .content.index
   - if user_signed_in?
-    - if current_user.integrations.any?
+    - if current_user.projects.any?
       .btn.btn-default= link_to "Jira Integrations", user_path(current_user)
       h3="Projects"
       - current_user.projects.order('name').each do |project|
