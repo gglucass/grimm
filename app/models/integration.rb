@@ -66,7 +66,7 @@ class Integration < ActiveRecord::Base
         end
       end
       if new_record_project
-        new_project.reload.analyze(first_analysis: true)
+        new_project.reload.analyze(first_analysis: false)
       end
     end
     return self.user.projects
