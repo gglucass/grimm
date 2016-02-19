@@ -25,28 +25,30 @@ p
   br
   ="3. Complete registration of new account. Click ‘set your password’ in the invitation email"
   br
-  ="4. Optionally: grant the Grimm User Story Review user administrator rights. This will simplify setting-up the integration."
+  ="3a. Optionally: grant the Grimm User Story Review user administrator rights. This will simplify setting-up the integration."
+  br
+  ="3b. Optionally: choose the projects that the Grimm User Story Review user is to try the Grimm tool with a limited number of projects."
   br
   - if current_user
-    ="5. Go to your "
+    ="4. Go to your "
     = link_to "user configuration page", user_path(current_user)
     = " and submit the following information:"
   - else
-    ="5. Register "
+    ="4. Register "
     = link_to "an account", new_user_registration_path
     = " and submit the following information on the user edit page:"
   br
-  ="5.1 The url of your jira environment (should look something like https://xxxx.atlassian.net)"
+  ="4.1 The url of your jira environment (should look something like https://xxxx.atlassian.net)"
   br
-  ="5.2 username of newly added grimm user"
+  ="4.2 username of newly added grimm user"
   br
-  ="5.3 password of newly added user"
+  ="4.3 password of newly added user"
   br
-  ="6. You should now see your project name on the "
+  ="5. You should now see your project name on the "
   = link_to "homepage", "https://aqusa.nl"
   = " and comments should be placed whenever a new story is added or updated"
   br
-  ="7. If you do not want Grimm to comment on user stories in Jira, you can turn this off on the project page"
+  ="6. If you do not want Grimm to comment on user stories in Jira, you can turn this off on the project page"
   br
   h4="Important"
   = "If you did not grant administrator rights to the Grimm User Story Review user, please follow these steps to complete configuration:"
