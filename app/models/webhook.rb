@@ -1,6 +1,7 @@
 #TODO: Fix DRY Stuff
 class Webhook < ActiveRecord::Base
   serialize :json_string, JSON
+  after_create :set_site_url
   
   def self.parse(data)
     Webhook.create(json_string: data)
@@ -12,6 +13,24 @@ class Webhook < ActiveRecord::Base
       end
     elsif kind == 'jira'
       Webhook.send("#{kind}_#{data['webhookEvent'].gsub('jira:',"")}", data)
+    end
+  end
+
+  def set_site_url
+    kind = self.json_string.has_key?('webhookEvent') ? 'jira' : 'pivotal'
+    if kind == 'jira'
+      webhook_object = self.json_string["webhookEvent"].split('_').first
+      case webhook_object
+      when 'jira:issue' 
+        webhook_object = 'issue'
+      when 'board'
+        webhook_object = 'configuration'
+      end
+      begin
+        self.site_url = URI.parse(self.json_string[webhook_object]["self"]).host
+        self.save
+      rescue
+      end
     end
   end
 
