@@ -57,7 +57,8 @@ br
     ul.story_report
       - stories.each_with_index do |story, index| 
         li.perfect-story
-          h4.story-title= "#" + story.id.to_s
+        - key = story.external_key.nil? ? story.external_id.to_s : story.external_key.to_s
+          h4.story-title= "#" + key
           h4.edit.story-title id="#{story.id}"= " #{story.title}"
 - else
   .story_report
