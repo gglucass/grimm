@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160304103406) do
+ActiveRecord::Schema.define(version: 20160307134617) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -92,8 +92,8 @@ ActiveRecord::Schema.define(version: 20160304103406) do
     t.text     "title"
     t.string   "external_id"
     t.integer  "project_id"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
     t.text     "role"
     t.text     "means"
     t.text     "ends"
@@ -102,6 +102,7 @@ ActiveRecord::Schema.define(version: 20160304103406) do
     t.text     "comments"
     t.text     "description"
     t.string   "estimation"
+    t.string   "external_key"
   end
 
   add_index "stories", ["project_id"], name: "index_stories_on_project_id", using: :btree

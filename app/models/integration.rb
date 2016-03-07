@@ -60,7 +60,7 @@ class Integration < ActiveRecord::Base
           new_story.analyze()
         end
         new_story.update_attributes(priority: issue.priority.name, status: issue.status.name, comments: issue.comments.to_json, 
-          description: issue.description)
+          description: issue.description, external_key: issue.key)
         if issue.try(:customfield_10008)
           new_story.update_attributes(estimation: issue.customfield_10008)
         end

@@ -95,8 +95,9 @@ class Webhook < ActiveRecord::Base
     comments = data[:comment]
     description = data[:description]
     estimation = data[:customfield_10008]
+    external_key = data[:key]
     { priority: priority, status: status, title: title, comments: comments, 
-      description: description, estimation: estimation }
+      description: description, estimation: estimation, external_key: external_key }
   end
 
   ## JIRA Project

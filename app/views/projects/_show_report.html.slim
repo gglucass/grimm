@@ -69,7 +69,8 @@ br
         - if defects.length > 0
           li.story_defects
             /! <h4 class='story-title'>{{ "#" + loop.index|string }}</h4
-            h4.story-title= "#" + story.id.to_s
+            - key = story.external_key.nil? ? story.external_id.to_s : story.external_key.to_s
+            h4.story-title= "#" + key
             h4.edit.story-title id="#{story.id}" = " #{story.title}"
             - defects.each do |defect|
               .defect_box
