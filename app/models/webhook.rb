@@ -93,6 +93,7 @@ class Webhook < ActiveRecord::Base
   end
 
   def self.parse_jira_data(data)
+    external_key = data[:issue][:key]
     data = data[:issue][:fields]
     priority = data[:priority][:name]
     status = data[:status][:name]
@@ -100,7 +101,6 @@ class Webhook < ActiveRecord::Base
     comments = data[:comment]
     description = data[:description]
     estimation = data[:customfield_10008]
-    external_key = data[:key]
     { priority: priority, status: status, title: title, comments: comments, 
       description: description, estimation: estimation, external_key: external_key }
   end
