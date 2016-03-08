@@ -72,7 +72,9 @@ class Webhook < ActiveRecord::Base
   def self.jira_issue_updated(data)
     project = Project.find_by(external_id: data[:issue][:fields][:project][:id], site_url: URI.parse(data[:issue][:self]).host)
     story = Story.where(project_id: project.id, external_id: data[:issue][:id]).first
-    story.assign_attributes(Webhook.parse_jira_data(data))
+    if story
+      story.assign_attributes(Webhook.parse_jira_data(data))
+    end
     if story.changed?
       if story.title_changed?
         story.save()
