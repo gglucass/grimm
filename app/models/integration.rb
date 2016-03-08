@@ -55,21 +55,24 @@ class Integration < ActiveRecord::Base
       continue = true
       start_at = 0
       while continue
-        issues = project.issues(startAt: start_at, maxResults: 100).select { |i| i.issuetype.name.in?(['Story', new_project.custom_issue_type]) }
+        issues = project.issues(startAt: start_at, maxResults: 100)
+        selected_issues = issues.select { |i| i.issuetype.name.in?(['Story', new_project.custom_issue_type]) }
         continue = issues.count == 100
         start_at += 100
-        issues.each do |issue|
-          new_story = new_project.stories.find_or_initialize_by(external_id: issue.id, title: issue.summary) 
-          if new_story.new_record?
-            new_story.save()
-            new_story.analyze()
+        Thread.start {
+          selected_issues.each do |issue|
+            new_story = new_project.stories.find_or_initialize_by(external_id: issue.id, title: issue.summary) 
+            if new_story.new_record?
+              new_story.save()
+              new_story.analyze()
+            end
+            new_story.update_attributes(priority: issue.priority.name, status: issue.status.name, comments: issue.comments.to_json, 
+              description: issue.description, external_key: issue.key)
+            if issue.try(:customfield_10008)
+              new_story.update_attributes(estimation: issue.customfield_10008)
+            end
           end
-          new_story.update_attributes(priority: issue.priority.name, status: issue.status.name, comments: issue.comments.to_json, 
-            description: issue.description, external_key: issue.key)
-          if issue.try(:customfield_10008)
-            new_story.update_attributes(estimation: issue.customfield_10008)
-          end
-        end
+        }
       end
       if new_record_project
         new_project.reload.analyze(first_analysis: false)
