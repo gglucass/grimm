@@ -70,6 +70,7 @@ class Integration < ActiveRecord::Base
             if issue.try(:customfield_10008)
               new_story.update_attributes(estimation: issue.customfield_10008)
             end
+          end
           }
         end
       end
