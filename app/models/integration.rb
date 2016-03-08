@@ -52,7 +52,7 @@ class Integration < ActiveRecord::Base
       new_project.integrations += [self]
       new_record_project = new_project.new_record?
       new_project.save()
-      issues = project.issues.select { |i| i.issuetype.name == 'Story' }
+      issues = project.issues.select { |i| i.issuetype.name.in?(['Story', project.custom_issue_type]) }
       issues.each do |issue|
         new_story = new_project.stories.find_or_initialize_by(external_id: issue.id, title: issue.summary) 
         if new_story.new_record?

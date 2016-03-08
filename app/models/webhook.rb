@@ -60,10 +60,13 @@ class Webhook < ActiveRecord::Base
   ## JIRA Issue
   def self.jira_issue_created(data)
     project = Project.find_by(external_id: data[:issue][:fields][:project][:id], site_url: URI.parse(data[:issue][:self]).host)
-    story = Story.create(title: data[:issue][:fields][:summary], project_id: project.id, external_id: data[:issue][:id])
-    story.assign_attributes(Webhook.parse_jira_data(data))
-    story.save()
-    story.analyze()
+    issuetype = data[:issue][:fields][:issuetype][:name]
+    if issuetype.in?(['Story', project.custom_issue_type])
+      story = Story.create(title: data[:issue][:fields][:summary], project_id: project.id, external_id: data[:issue][:id])
+      story.assign_attributes(Webhook.parse_jira_data(data))
+      story.save()
+      story.analyze()
+    end
   end
 
   def self.jira_issue_updated(data)
