@@ -15,6 +15,8 @@ Rails.application.routes.draw do
   end
 
   post 'webhook' => 'static_pages#webhook'
+  get 'webhook' => 'static_pages#webhook'
+  post 'smshook' => 'static_pages#smshook'
   get 'instructions' => 'static_pages#instructions'
 
   resources :projects, only: [:new, :create, :show, :edit, :update] do

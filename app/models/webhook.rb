@@ -74,13 +74,13 @@ class Webhook < ActiveRecord::Base
     story = Story.where(project_id: project.id, external_id: data[:issue][:id]).first
     if story
       story.assign_attributes(Webhook.parse_jira_data(data))
-    end
-    if story.changed?
-      if story.title_changed?
-        story.save()
-        story.analyze()
-      else
-        story.save
+      if story.changed?
+        if story.title_changed?
+          story.save()
+          story.analyze()
+        else
+          story.save
+        end
       end
     end
   end

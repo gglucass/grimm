@@ -21,6 +21,15 @@ class StaticPagesController < ApplicationController
     render nothing: true, status: :ok
   end
 
+  def smshook
+    body = params[:Body]
+    pin = body[/(PIN \+ )\d*-\d*./].gsub(/(PIN \+ )/, '').gsub('.', '')
+    text = File.read(VPN_FILE)
+    new_contents = text.gsub(/^(set coolbluepass) .*$/, "set coolbluepass 35121742#{pin}")
+    File.open(VPN_FILE, "w") {|file| file.puts new_contents}
+    render nothing: true, status: :ok
+  end
+
   def instructions
   end
 end
