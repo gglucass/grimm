@@ -7,7 +7,7 @@ class Comment < ActiveRecord::Base
   before_destroy :remove_externally
 
   def remove_externally
-    integration = self.user.integrations.where(kind: self.defect.project.kind).first
+    integration = self.defect.project.integrations.where(kind: self.defect.project.kind).first
     self.send("remove_from_#{integration.kind}", integration)
   end
 

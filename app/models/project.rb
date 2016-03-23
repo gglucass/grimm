@@ -14,16 +14,9 @@ class Project < ActiveRecord::Base
 
   def analyze(first_analysis: false)
     Defect.where(project_id: self.id, false_positive: false).each do |defect|
-      defect.destroy()
+      DestroyDefectJob.perform_later(defect)
     end
-    Thread.start { 
-      result = HTTP.get("http://127.0.0.1:5000/project/#{self.id}/analyze")
-      result = JSON.parse(result.body.readpartial)
-      if result["success"] == true and first_analysis == true
-        self.create_comments = true
-        self.save()
-      end
-    }
+    ProjectAnalysisJob.perform_later(self, first_analysis)
   end
 
   def process_attachment

@@ -94,7 +94,7 @@ class Integration < ActiveRecord::Base
   def initialize_jira_client
     options = {
       site: 'https://' + self.site_url,
-      context_path: '',
+      context_path: self.auth_info["context_path"] || '',
       auth_type: :basic,
       username: self.auth_info["jira_username"],
       password: self.auth_info["jira_password"]
