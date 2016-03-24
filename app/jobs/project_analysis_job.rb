@@ -1,5 +1,5 @@
 class ProjectAnalysisJob < ActiveJob::Base
-  queue_as :high_priority
+  queue_as :default
 
   def perform(project, first_analysis)
     result = HTTP.get("http://127.0.0.1:5000/project/#{project.id}/analyze")
