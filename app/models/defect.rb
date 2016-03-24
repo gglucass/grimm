@@ -35,7 +35,7 @@ class Defect < ActiveRecord::Base
     }
     client = JIRA::Client.new(options)
     issue = client.Issue.find(self.story.external_id)
-    text = "*" + I18n.t("defect_comments.reports") + I18n.t("defect_comments.#{self.kind}.#{self.subkind}") + "*\n" + I18n.t("defect_comments.#{self.kind}.#{self.subkind}_explanation") + "\n" + "*Suggestion*: " + self.highlight
+    text = "*" + I18n.t("defect_comments.reports") + I18n.t("defect_comments.#{self.kind}.#{self.subkind}") + "*\n" + I18n.t("defect_comments.#{self.kind}.#{self.subkind}_explanation") + "\n" + "*Suggestion*: " + Comment.parse_jira_highlight(self.highlight)
     comment = issue.comments.build
     if integration.jira_visibility
       comment.save({'body': text, 

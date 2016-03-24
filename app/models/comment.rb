@@ -18,4 +18,8 @@ class Comment < ActiveRecord::Base
   def remove_from_jira(integration)
     HTTP.basic_auth(user: integration.auth_info["jira_username"], pass: integration.auth_info["jira_password"]).delete("https://#{integration.site_url}/rest/api/2/issue/#{self.defect.story.external_id}/comment/#{self.external_id}")
   end
+
+  def self.parse_jira_highlight(highlight)
+    highlight.gsub(/<span .*'>/, '{color:d04437}').gsub(/<\/span>/, '{color}')
+  end
 end

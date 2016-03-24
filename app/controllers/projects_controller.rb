@@ -25,12 +25,12 @@ class ProjectsController < ApplicationController
 
   def show
     @project_defects = @project.defects.where(false_positive: false)
-    @severe_defects = @project.defects.where(severity: "high", false_positive: false)
-    @medium_defects = @project.defects.where(severity: "medium", false_positive: false)
-    @minor_defects = @project.defects.where(severity: "minor", false_positive: false)
+    @severe_defects = @project_defects.where(severity: "high")
+    @medium_defects = @project_defects.where(severity: "medium")
+    @minor_defects = @project_defects.where(severity: "minor")
     @false_positives = @project.defects.where(false_positive: true)
     @perfect_stories = Story.includes(:defects).where(defects: {id: nil}, project_id: @project.id)
-    @stories = @project.stories.sort
+    @stories = Story.where(project_id: @project.id).paginate(page: params[:page])
   end
 
 
@@ -50,6 +50,6 @@ class ProjectsController < ApplicationController
 
   private
     def project_params
-      params.require(:project).permit(:name, :requirements_document, :kind, :publik)
+      params.require(:project).permit(:name, :requirements_document, :kind, :publik, :page)
     end
 end

@@ -66,3 +66,4 @@ gem 'paperclip', '~> 4.3'
 gem 'paper_trail'
 gem 'sucker_punch'
 gem 'whenever', require: false
+gem 'will_paginate'
