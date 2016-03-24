@@ -7,5 +7,5 @@ class DailyImportStoriesJob < ActiveJob::Base
       integration.initialize_jira_stories(client, [])
     end
   end
-  end
+  
 end
