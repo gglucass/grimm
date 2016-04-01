@@ -55,22 +55,22 @@ br
   - stories = perfect_stories
   .story_report
     ul.story_report
-      - stories.each_with_index do |story, index| 
+      - stories.each_with_index do |story, story_index| 
         li.perfect-story
-          - key = story.external_key.nil? ? story.external_id.to_s : story.external_key.to_s
-          h4.story-title= "#" + key
+          - key = story.external_key.nil? ? story_index : story.external_key
+          h4.story-title= "#" + key.to_s
           h4.edit.story-title id="#{story.id}"= " #{story.title}"
 - else
   .story_report
     ul.story_report
-      - stories.each do |story|
+      - stories.each_with_index do |story, story_index|
         - defects = story.defects.where(false_positive: (params['false_positive'] or false))
         - if params['severity'] != nil
           - defects = defects.where(severity: params['severity'])        
         - if defects.length > 0
           li.story_defects
-            - key = story.external_key.nil? ? story.external_id.to_s : story.external_key.to_s
-            h4.story-title= "#" + key
+            - key = story.external_key.nil? ? story_index : story.external_key
+            h4.story-title= "#" + key.to_s
             h4.edit.story-title id="#{story.id}" = " #{story.title}"
             - defects.each do |defect|
               .defect_box
