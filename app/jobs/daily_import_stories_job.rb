@@ -5,7 +5,7 @@ class DailyImportStoriesJob < ActiveJob::Base
     if ENV["HOSTNAME"] == "https://aqusa-coolblue.science.uu.nl"
       integrations = Integration.where(kind: 'jira', site_url: 'jira.coolblue.eu')
     else
-      integrations = Integration.where(kind: 'jira').where_not(site_url: 'jira.coolblue.eu')
+      integrations = Integration.where(kind: 'jira').where.not(site_url: 'jira.coolblue.eu')
     end
     integrations.each do |integration|
       client = integration.initialize_jira_client
