@@ -9,7 +9,10 @@ class DailyImportStoriesJob < ActiveJob::Base
     end
     integrations.each do |integration|
       client = integration.initialize_jira_client
-      integration.initialize_jira_stories(client, [])
+      begin
+        integration.initialize_jira_stories(client, [])
+      rescue
+      end
     end
   end
   
