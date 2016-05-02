@@ -26,14 +26,7 @@ class Defect < ActiveRecord::Base
 
   def create_jira_comment
     integration = self.project.integrations.where(kind: 'jira').first
-    options = {
-      site: 'https://' + integration.site_url,
-      context_path: '',
-      auth_type: :basic,
-      username: integration.auth_info["jira_username"],
-      password: integration.auth_info["jira_password"]
-    }
-    client = JIRA::Client.new(options)
+    client = integration.initialize_jira_client
     issue = client.Issue.find(self.story.external_id)
     text = "*" + I18n.t("defect_comments.reports") + I18n.t("defect_comments.#{self.kind}.#{self.subkind}") + "*\n" + I18n.t("defect_comments.#{self.kind}.#{self.subkind}_explanation") + "\n" + "*Suggestion*: " + Comment.parse_jira_highlight(self.highlight)
     comment = issue.comments.build
