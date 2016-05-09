@@ -135,4 +135,13 @@ class Integration < ActiveRecord::Base
       end
     end
   end
+
+  def self.get_all_integrations
+    if ENV["HOSTNAME"] == "https://aqusa-coolblue.science.uu.nl"
+      integrations = Integration.where(kind: 'jira', site_url: 'jira.coolblue.eu')
+    else
+      integrations = Integration.where(kind: 'jira').where.not(site_url: 'jira.coolblue.eu')
+    end
+    return integrations
+  end
 end
