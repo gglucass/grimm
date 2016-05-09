@@ -9,6 +9,7 @@ class Project < ActiveRecord::Base
   has_and_belongs_to_many :integrations, -> { uniq }
   has_many :defects
   has_many :stories, dependent: :destroy
+  has_many :boards, dependent: :destroy
 
   after_save :process_attachment, if: Proc.new { |a| a.requirements_document_updated_at_changed? }
 

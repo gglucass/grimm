@@ -11,10 +11,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160308111821) do
+ActiveRecord::Schema.define(version: 20160509115053) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "boards", force: :cascade do |t|
+    t.integer  "project_id"
+    t.string   "name"
+    t.string   "external_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "boards", ["project_id"], name: "index_boards_on_project_id", unique: true, using: :btree
 
   create_table "comments", force: :cascade do |t|
     t.string   "external_id"
@@ -88,6 +98,19 @@ ActiveRecord::Schema.define(version: 20160308111821) do
 
   add_index "projects_users", ["project_id"], name: "index_projects_users_on_project_id", using: :btree
   add_index "projects_users", ["user_id"], name: "index_projects_users_on_user_id", using: :btree
+
+  create_table "sprints", force: :cascade do |t|
+    t.integer  "board_id"
+    t.string   "name"
+    t.string   "external_id"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.float    "recidivism_rate"
+    t.datetime "start_date"
+    t.datetime "end_date"
+  end
+
+  add_index "sprints", ["board_id"], name: "index_sprints_on_board_id", unique: true, using: :btree
 
   create_table "stories", force: :cascade do |t|
     t.text     "title"
