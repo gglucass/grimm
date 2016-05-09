@@ -35,4 +35,8 @@ class ProjectPolicy
     @project.users.include?(@current_user)
   end
 
+  def report?
+    @current_user.admin? or @project.users.include?(@current_user)
+  end
+
 end

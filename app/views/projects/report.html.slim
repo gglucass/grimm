@@ -1,0 +1,14 @@
+center
+  h1
+    = "#{@project.name} - "
+    = pluralize(@project.stories.count, "story")
+
+- @project.boards.each_with_index do |board, index|
+  h2
+    = "Board #{index}: #{board.name}"
+
+  - board.sprints.each do |sprint|
+    h3
+      = "#{sprint.name}"
+    p
+      = t('.recidivism_rate', rate: sprint.recidivism_rate.round(2))

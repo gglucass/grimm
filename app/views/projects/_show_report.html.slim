@@ -7,6 +7,8 @@ center
     .btn.btn-default= link_to t(".update_document"), edit_project_path(project.id)
   - else
     .btn.btn-default= link_to t(".toggle_comments_#{project.create_comments}"), project_toggle_comments_path(project.id)
+  .btn.btn-default= link_to t(".reports"), project_report_path(project.id)
+  
 br
 .defect-blocks
   .left-defect-block

@@ -1,5 +1,5 @@
 class ProjectsController < ApplicationController
-  before_action :set_and_authorize_project, only: [:show, :edit, :update, :toggle_comments, :analyze]
+  before_action :set_and_authorize_project, only: [:show, :edit, :update, :toggle_comments, :analyze, :report]
 
   def new
     @project = Project.new
@@ -46,6 +46,9 @@ class ProjectsController < ApplicationController
   def analyze
     @project.analyze()
     redirect_to project_path(@project)
+  end
+
+  def report
   end
 
   private

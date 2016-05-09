@@ -22,6 +22,7 @@ Rails.application.routes.draw do
   resources :projects, only: [:new, :create, :show, :edit, :update] do
     get 'toggle_comments'
     get 'analyze'
+    get 'report'
   end
   
 
