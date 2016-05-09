@@ -29,4 +29,16 @@ class Project < ActiveRecord::Base
     end
     self.analyze()
   end
+
+  def self.parse_http_body(body)
+    response = ''
+    read = ''
+    while read != nil
+      read = body.readpartial
+      if read != nil
+        response = response + read
+      end
+    end
+    return response
+  end
 end
