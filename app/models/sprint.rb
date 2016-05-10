@@ -27,8 +27,8 @@ class Sprint < ActiveRecord::Base
       issue_changelog.each do |history|
         history["items"].each do |item|
           if item["field"] == 'status'
-            from = board.statuses.find_by(name: item['fromString'].downcase).priority || -1
-            to = board.statuses.find_by(name: item['toString'].downcase).priority || -1
+            from = board.statuses.find_by(name: item['fromString'].downcase).try(:priority) || -1
+            to = board.statuses.find_by(name: item['toString'].downcase).try(:priority) || -1
             if from == -1 || to == -1
               puts "Date: #{history['created']} From: #{item['fromString']} To: #{item['toString']} "
             elsif from < to
