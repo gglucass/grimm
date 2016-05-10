@@ -1,6 +1,7 @@
 class Board < ActiveRecord::Base
   belongs_to :project
   has_many :sprints, dependent: :destroy
+  has_many :statuses, dependent: :destroy
 
 
   def self.import_boards(integration, project)
@@ -14,17 +15,26 @@ class Board < ActiveRecord::Base
     end
   end
 
+# todo: redo parse board status every now and then so recidivism is correctly calculated after updating the workflow
   def parse_board_status(integration, project)
-    board_config = JSON.parse(HTTP.basic_auth(user: integration.auth_info["jira_username"], pass: integration.auth_info["jira_password"]).get("https://#{integration.site_url}/rest/api/2/project/#{project.external_id}/statuses").body.readpartial)
-    status_hash = {}
-    board_config.each do |board|
-      if board["name"] == "Story"
-        statuses = board["statuses"]
+    board_statuses = JSON.parse(HTTP.basic_auth(user: integration.auth_info["jira_username"], pass: integration.auth_info["jira_password"]).get("https://#{integration.site_url}/rest/api/2/project/#{project.external_id}/statuses").body.readpartial)
+    board_statuses.each do |board_status|
+      if board_status["name"] == "Story"
+        statuses = board_status["statuses"]
         statuses.each_with_index do |status, index|
-          status_hash[status["name"].downcase] = index
+          if self.statuses.find_by(name: status["name"].downcase).nil?
+            if status["statusCategory"]["name"] == status["name"]
+                self.statuses.create(name: status["name"].downcase, priority: index)
+            else
+              parent_board = self.statuses.find_by(name: status["statusCategory"]["name"].downcase)
+              next_boards = self.statuses.where("priority > ?", parent_board.priority)
+              next_boards.each { |nb| nb.priority += 1; nb.save }
+              self.statuses.create(name: status["name"].downcase, priority: parent_board.priority + 1 )
+            end
+          end
         end
       end
     end
-    return status_hash
+    return self.statuses
   end
 end

@@ -18,7 +18,7 @@ class Sprint < ActiveRecord::Base
   def calculate_recidivism_rate(integration, project, board)
     client = integration.initialize_jira_client
     stories = self.get_sprint_stories(integration, project, board)
-    status_codes = board.parse_board_status(integration, project)
+    board.parse_board_status(integration, project)
     forward = 0.0
     backward = 0.0
     stories.each do |story|
@@ -27,8 +27,8 @@ class Sprint < ActiveRecord::Base
       issue_changelog.each do |history|
         history["items"].each do |item|
           if item["field"] == 'status'
-            from = status_codes[item['fromString'].downcase] || -1
-            to = status_codes[item['toString'].downcase] || -1
+            from = board.statuses.find_by(name: item['fromString'].downcase).priority || -1
+            to = board.statuses.find_by(name: item['toString'].downcase).priority || -1
             if from == -1 || to == -1
               puts "Date: #{history['created']} From: #{item['fromString']} To: #{item['toString']} "
             elsif from < to
