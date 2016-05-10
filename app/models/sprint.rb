@@ -3,22 +3,24 @@ class Sprint < ActiveRecord::Base
 
   def self.import_sprints(integration, project, board)
     sprints = JSON.parse(HTTP.basic_auth(user: integration.auth_info["jira_username"], pass: integration.auth_info["jira_password"]).get("https://#{integration.site_url}/rest/agile/1.0/board/#{board.external_id}/sprint").body.readpartial)
-
-    sprints["values"].each do |sprint|
-      new_sprint = board.sprints.find_or_initialize_by(external_id: sprint["id"])
-      new_sprint.name = sprint["name"]
-      new_sprint.start_date = DateTime.parse(sprint["startDate"])
-      new_sprint.end_date = DateTime.parse(sprint["endDate"])
-      if new_sprint.changed?
-        new_sprint.save()
+    begin
+      sprints["values"].each do |sprint|
+        new_sprint = board.sprints.find_or_initialize_by(external_id: sprint["id"])
+        new_sprint.name = sprint["name"]
+        new_sprint.start_date = DateTime.parse(sprint["startDate"])
+        new_sprint.end_date = DateTime.parse(sprint["endDate"])
+        if new_sprint.changed?
+          new_sprint.save()
+        end
       end
+    rescue
     end
   end
 
   def calculate_recidivism_rate(integration, project, board)
     client = integration.initialize_jira_client
     stories = self.get_sprint_stories(integration, project, board)
-    board.parse_board_status(integration, project)
+    status_hash = board.parse_board_status(integration, project)
     forward = 0.0
     backward = 0.0
     stories.each do |story|
@@ -27,8 +29,8 @@ class Sprint < ActiveRecord::Base
       issue_changelog.each do |history|
         history["items"].each do |item|
           if item["field"] == 'status'
-            from = board.statuses.find_by(name: item['fromString'].downcase).try(:priority) || -1
-            to = board.statuses.find_by(name: item['toString'].downcase).try(:priority) || -1
+            from = status_hash[item['fromString'].downcase] || -1
+            to   = status_hash[item['toString'].downcase]   || -1
             if from == -1 || to == -1
               puts "Date: #{history['created']} From: #{item['fromString']} To: #{item['toString']} "
             elsif from < to

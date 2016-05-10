@@ -26,15 +26,16 @@ class Board < ActiveRecord::Base
             if status["statusCategory"]["name"] == status["name"]
                 self.statuses.create(name: status["name"].downcase, priority: index)
             else
-              parent_board = self.statuses.find_by(name: status["statusCategory"]["name"].downcase)
-              next_boards = self.statuses.where("priority > ?", parent_board.priority)
+              parent_status = self.statuses.find_by(name: status["statusCategory"]["name"].downcase)
+              parent_priority = parent_status.try(:priority) || self.statuses.order(:priority).last.try(:priority) || -1
+              next_boards = self.statuses.where("priority > ?", parent_priority)
               next_boards.each { |nb| nb.priority += 1; nb.save }
-              self.statuses.create(name: status["name"].downcase, priority: parent_board.priority + 1 )
+              self.statuses.create(name: status["name"].downcase, priority: parent_priority + 1 )
             end
           end
         end
       end
     end
-    return self.statuses
+    return self.statuses.pluck(:name, :priority).to_h
   end
 end
