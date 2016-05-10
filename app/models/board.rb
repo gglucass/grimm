@@ -14,13 +14,17 @@ class Board < ActiveRecord::Base
     end
   end
 
-  def parse_board_status(integration)
-    board_config = JSON.parse(HTTP.basic_auth(user: integration.auth_info["jira_username"], pass: integration.auth_info["jira_password"]).get("https://#{integration.site_url}/rest/agile/1.0/board/#{self.external_id}/configuration").body.readpartial)
-    columns = board_config["columnConfig"]["columns"]
-    column_hash = {}
-    columns.each_with_index do |column, index|
-      column_hash[column["name"].downcase] =  index
+  def parse_board_status(integration, project)
+    board_config = JSON.parse(HTTP.basic_auth(user: integration.auth_info["jira_username"], pass: integration.auth_info["jira_password"]).get("https://#{integration.site_url}/rest/api/2/project/#{project.external_id}/statuses").body.readpartial)
+    status_hash = {}
+    board_config.each do |board|
+      if board["name"] == "Story"
+        statuses = board["statuses"]
+        statuses.each_with_index do |status, index|
+          status_hash[status["name"].downcase] = index
+        end
+      end
     end
-    return column_hash
+    return status_hash
   end
 end

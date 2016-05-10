@@ -18,7 +18,7 @@ class Sprint < ActiveRecord::Base
   def calculate_recidivism_rate(integration, project, board)
     client = integration.initialize_jira_client
     stories = self.get_sprint_stories(integration, project, board)
-    status_codes = board.parse_board_status(integration)
+    status_codes = board.parse_board_status(integration, project)
     forward = 0.0
     backward = 0.0
     stories.each do |story|
