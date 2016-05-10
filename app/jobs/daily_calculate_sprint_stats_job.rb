@@ -12,7 +12,7 @@ class DailyCalculateSprintStatsJob < ActiveJob::Base
             board.sprints.each do |sprint|
               if sprint.recidivism_rate.nil? or sprint.recidivism_rate.nan? or sprint.end_date > (Date.today-30)
                 sprint.calculate_recidivism_rate(integration, project, board)
-                sprint.save()
+                sprint.save() unless sprint.recidivism_rate.nan?
               end
             end
           end
