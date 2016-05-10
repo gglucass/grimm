@@ -16,8 +16,8 @@ class DailyCalculateSprintStatsJob < ActiveJob::Base
               end
             end
           end
-        rescue
         end
+      rescue
       end
     end
   end
