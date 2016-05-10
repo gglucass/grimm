@@ -6,10 +6,16 @@ center
 - @project.boards.each_with_index do |board, index|
   h2
     = "Board #{index}: #{board.name}"
+  b="Statuses"
+  - board.statuses.order(:priority).each do |status|
+    p= "Status #{status.priority}: #{status.name}"
+
 
   - board.sprints.each do |sprint|
     - if !sprint.recidivism_rate.nil?
-      h3
+      b
         = "#{sprint.name}"
       p
         = t('.recidivism_rate', rate: sprint.recidivism_rate.round(2))
+        br
+        = t('.dates', start_date: sprint.start_date.to_date, end_date: sprint.end_date.to_date)
