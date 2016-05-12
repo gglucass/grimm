@@ -74,7 +74,7 @@ class Integration < ActiveRecord::Base
             new_stories << new_story
             new_story.save()
           end
-          new_story.update_attributes(priority: issue.priority.name, status: issue.status.name, comments: issue.comments.to_json, 
+          new_story.update_attributes(priority: issue.priority.name, status: issue.status.name, comments_json: issue.comments.to_json, 
             description: issue.description, external_key: issue.key)
           if issue.try(:customfield_10008)
             new_story.update_attributes(estimation: issue.customfield_10008)

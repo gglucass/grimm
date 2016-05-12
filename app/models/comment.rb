@@ -2,6 +2,7 @@
 class Comment < ActiveRecord::Base
   has_paper_trail
   belongs_to :defect
+  belongs_to :story
   belongs_to :user
 
   before_destroy :remove_externally
