@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160510113303) do
+ActiveRecord::Schema.define(version: 20160511133602) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -33,9 +33,11 @@ ActiveRecord::Schema.define(version: 20160510113303) do
     t.integer  "user_id"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
+    t.integer  "story_id"
   end
 
   add_index "comments", ["defect_id"], name: "index_comments_on_defect_id", using: :btree
+  add_index "comments", ["story_id"], name: "index_comments_on_story_id", using: :btree
   add_index "comments", ["user_id"], name: "index_comments_on_user_id", using: :btree
 
   create_table "defects", force: :cascade do |t|
@@ -126,14 +128,14 @@ ActiveRecord::Schema.define(version: 20160510113303) do
     t.text     "title"
     t.string   "external_id"
     t.integer  "project_id"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
     t.text     "role"
     t.text     "means"
     t.text     "ends"
     t.text     "priority"
     t.text     "status"
-    t.text     "comments"
+    t.text     "comments_json"
     t.text     "description"
     t.string   "estimation"
     t.string   "external_key"

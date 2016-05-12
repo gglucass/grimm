@@ -3,6 +3,7 @@ class Story < ActiveRecord::Base
   has_paper_trail
   belongs_to :project
   has_many :defects, dependent: :destroy
+  has_many :comments
   validates_uniqueness_of :external_id, scope: [:project_id]
 
   def analyze

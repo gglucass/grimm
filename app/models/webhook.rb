@@ -101,7 +101,7 @@ class Webhook < ActiveRecord::Base
     comments = data[:comment]
     description = data[:description]
     estimation = data[:customfield_10008]
-    { priority: priority, status: status, title: title, comments: comments, 
+    { priority: priority, status: status, title: title, comments_json: comments, 
       description: description, estimation: estimation, external_key: external_key }
   end
 
