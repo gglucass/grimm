@@ -43,7 +43,8 @@ en:
       toggle_comments_true: "Turn comments off"
     report:
       recidivism_rate: "Recidivism Rate %{rate}%"
-      dates: "Start date: %{start_date} || End date: %{end_date}"
+      sprint_name: "%{name} || from {start_date} to {end_date}"
+      comments: "Comments: %{comment_count}"
   defect_comments:
     well_formed:
       no_means_comma_explanation: "The user story is well-formed, but it's good practice to add a comma between the role and action segments"

@@ -7,9 +7,23 @@ class Comment < ActiveRecord::Base
 
   before_destroy :remove_externally
 
+  def self.import_comments(integration, project)
+    client = integration.initialize_jira_client()
+    project.stories.each do |story|
+      jira_story = client.Issue.find(story.external_id)
+      jira_story.comments.each do |comment|
+        new_comment = story.comments.find_or_initialize_by(external_id: comment.id)
+        new_comment.text = comment.body
+        new_comment.save()
+      end
+    end
+  end
+
   def remove_externally
-    integration = self.defect.project.integrations.where(kind: self.defect.project.kind).first
-    self.send("remove_from_#{integration.kind}", integration)
+    if !self.defect.nil?
+      integration = self.defect.project.integrations.where(kind: self.defect.project.kind).first
+      self.send("remove_from_#{integration.kind}", integration)
+    end
   end
 
   def remove_from_pivotal(integration)

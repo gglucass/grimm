@@ -14,8 +14,9 @@ center
   - board.sprints.each do |sprint|
     - if !sprint.recidivism_rate.nil?
       b
-        = "#{sprint.name}"
+        = t('.sprint_name', name: sprint.name, start_date: sprint.start_date.to_date, end_date: sprint.end_date.to_date)
       p
         = t('.recidivism_rate', rate: sprint.recidivism_rate.round(2))
         br
-        = t('.dates', start_date: sprint.start_date.to_date, end_date: sprint.end_date.to_date)
+        = t('.comments', comment_count: sprint.comment_count)
+        

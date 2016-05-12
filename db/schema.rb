@@ -110,6 +110,7 @@ ActiveRecord::Schema.define(version: 20160511133602) do
     t.float    "recidivism_rate"
     t.datetime "start_date"
     t.datetime "end_date"
+    t.integer  "comment_count"
   end
 
   add_index "sprints", ["board_id"], name: "index_sprints_on_board_id", unique: true, using: :btree

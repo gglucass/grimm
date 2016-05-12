@@ -17,9 +17,18 @@ class Sprint < ActiveRecord::Base
     end
   end
 
-  def calculate_recidivism_rate(integration, project, board)
+  def calculate_sprint_stats(integration, project, board)
     client = integration.initialize_jira_client
     stories = self.get_sprint_stories(integration, project, board)
+    if self.recidivism_rate.nil? or self.recidivism_rate.nan? or self.end_date > (Date.today-30)
+      self.calculate_recidivism_rate(board, client, integration, project, stories)
+      self.recidivism_rate = nil if self.recidivism_rate.nan?
+    end
+    self.calculate_comments(client, stories) if self.end_date > (Date.today-30)
+    self.save if self.changed?
+  end
+
+  def calculate_recidivism_rate(board, client, integration, project, stories)
     status_hash = board.parse_board_status(integration, project)
     forward = 0.0
     backward = 0.0
@@ -43,6 +52,12 @@ class Sprint < ActiveRecord::Base
       end
     end
     self.recidivism_rate = (backward/(forward+backward)*100)
+  end
+
+  def calculate_comments(client, stories)
+    comments = 0
+    stories.each { |s| comments += Comment.where(external_id: s, defect: nil).count }
+    self.comment_count = comments
   end
 
   def get_sprint_stories(integration, project, board)
