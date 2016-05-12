@@ -43,7 +43,7 @@ en:
       toggle_comments_true: "Turn comments off"
     report:
       recidivism_rate: "Recidivism Rate %{rate}%"
-      sprint_name: "%{name} || from {start_date} to {end_date}"
+      sprint_name: "%{name} || from %{start_date} to %{end_date}"
       comments: "Comments: %{comment_count}"
   defect_comments:
     well_formed:
