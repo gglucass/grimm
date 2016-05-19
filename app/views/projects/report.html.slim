@@ -16,9 +16,9 @@ center
       b
         = t('.sprint_name', name: sprint.name, start_date: sprint.start_date.to_date, end_date: sprint.end_date.to_date)
       p
-        = t('.recidivism_rate', rate: sprint.recidivism_rate.round(2))
+        = t('.recidivism_rate', rate: sprint.recidivism_rate.try(:round, 2))
         br
-        = t('.velocity', velocity: sprint.velocity.round(0))
+        = t('.velocity', velocity: sprint.velocity.try(:round, 0))
         br
         = t('.comments', comment_count: sprint.comment_count)
         br

@@ -42,8 +42,8 @@ en:
       toggle_comments_false: "Turn comments on"
       toggle_comments_true: "Turn comments off"
     report:
-      recidivism_rate: "Recidivism Rate %{rate}%"
-      velocity: "Velocity %{velocity}%"
+      recidivism_rate: "Recidivism rate: %{rate}%"
+      velocity: "Velocity: %{velocity}"
       sprint_name: "%{name} || from %{start_date} to %{end_date}"
       comments: "Comments: %{comment_count}"
       bug_count: "Bugs in sprint: %{bug_count}"
