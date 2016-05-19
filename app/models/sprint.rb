@@ -62,7 +62,10 @@ class Sprint < ActiveRecord::Base
     comments = 0
     stories.each do |s|
       story = Story.find_by_external_id(s)
-      comments += Comment.where(story_id: story.id, defect: nil).count
+      begin
+        comments += Comment.where(story_id: story.id, defect: nil).count
+      rescue
+      end
     end
     self.comment_count = comments
   end

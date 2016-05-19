@@ -110,6 +110,12 @@ class Integration < ActiveRecord::Base
     return JIRA::Client.new(options)
   end
 
+    def get_user_story_point_field_name
+      fields = JSON.parse(HTTP.basic_auth(user: self.auth_info["jira_username"], pass: self.auth_info["jira_password"]).get("https://#{self.site_url}/rest/api/2/field").body.readpartial)
+      fields.keep_if { |f| f["name"] == "Story Points" }
+      return fields.first["id"]
+    end
+
   def create_pivotal_webhook(project)
     HTTP.headers('X-TrackerToken' => self.auth_info).post("https://www.pivotaltracker.com/services/v5/projects/#{project.external_id}/webhooks", form: {webhook_url: "#{ENV["HOSTNAME"]}/webhook", webhook_version: "v5"} )
   end

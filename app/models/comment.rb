@@ -10,11 +10,14 @@ class Comment < ActiveRecord::Base
   def self.import_comments(integration, project)
     client = integration.initialize_jira_client()
     project.stories.each do |story|
-      jira_story = client.Issue.find(story.external_id)
-      jira_story.comments.each do |comment|
-        new_comment = story.comments.find_or_initialize_by(external_id: comment.id)
-        new_comment.text = comment.body
-        new_comment.save()
+      begin
+        jira_story = client.Issue.find(story.external_id)
+        jira_story.comments.each do |comment|
+          new_comment = story.comments.find_or_initialize_by(external_id: comment.id)
+          new_comment.text = comment.body
+          new_comment.save()
+        end
+      rescue
       end
     end
   end

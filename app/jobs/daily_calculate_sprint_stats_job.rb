@@ -10,19 +10,11 @@ class DailyCalculateSprintStatsJob < ActiveJob::Base
           jql = first_run ? "project=#{project.external_id}" : "project=#{project.external_id} and updated > -30d"
           Issue.import_issues(integration, project, jql)
           Comment.import_comments(integration, project)
-        end
-        
-        integration.projects.each do |project|
           project.boards.each do |board|
             Sprint.import_sprints(integration, project, board)
+            sprints = first_run ? board.sprints : board.sprints.where("end_date > ?", (Date.today-30))
+            sprints.each { |s| s.calculate_sprint_stats() }
           end
-        end
-        if first_run
-          Sprint.where("end_date > ?", (Date.today-30)).each do |sprint|
-            sprint.calculate_sprint_stats()
-          end
-        else
-          sprint.calculate_sprint_stats()
         end
       rescue
       end
