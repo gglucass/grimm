@@ -18,5 +18,12 @@ center
       p
         = t('.recidivism_rate', rate: sprint.recidivism_rate.round(2))
         br
+        = t('.velocity', velocity: sprint.velocity.round(0))
+        br
         = t('.comments', comment_count: sprint.comment_count)
+        br
+        = t('.bug_count', bug_count: sprint.bug_count)
+        br
+        = t('.bug_count_long', bug_count_long: sprint.bug_count_long)
+
         

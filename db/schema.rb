@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160511133602) do
+ActiveRecord::Schema.define(version: 20160519121839) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -76,6 +76,20 @@ ActiveRecord::Schema.define(version: 20160511133602) do
   add_index "integrations_projects", ["project_id", "integration_id"], name: "index_integrations_projects_on_project_id_and_integration_id", unique: true, using: :btree
   add_index "integrations_projects", ["project_id"], name: "index_integrations_projects_on_project_id", using: :btree
 
+  create_table "issues", force: :cascade do |t|
+    t.integer  "project_id"
+    t.string   "external_id"
+    t.text     "title"
+    t.string   "status"
+    t.string   "kind"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+    t.datetime "jira_create"
+    t.datetime "jira_update"
+    t.datetime "jira_resolve"
+    t.float    "story_points"
+  end
+
   create_table "projects", force: :cascade do |t|
     t.string   "name"
     t.string   "external_id"
@@ -111,6 +125,9 @@ ActiveRecord::Schema.define(version: 20160511133602) do
     t.datetime "start_date"
     t.datetime "end_date"
     t.integer  "comment_count"
+    t.integer  "bug_count"
+    t.integer  "bug_count_long"
+    t.float    "velocity"
   end
 
   add_index "sprints", ["board_id"], name: "index_sprints_on_board_id", unique: true, using: :btree

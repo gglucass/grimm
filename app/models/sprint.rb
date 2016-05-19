@@ -17,14 +17,18 @@ class Sprint < ActiveRecord::Base
     end
   end
 
-  def calculate_sprint_stats(integration, project, board)
+  def calculate_sprint_stats
+    board = self.board
+    project = board.project
+    integration = project.integrations.first
     client = integration.initialize_jira_client
-    stories = self.get_sprint_stories(integration, project, board)
-    if self.recidivism_rate.nil? or self.recidivism_rate.nan? or self.end_date > (Date.today-30)
-      self.calculate_recidivism_rate(board, client, integration, project, stories)
-      self.recidivism_rate = nil if self.recidivism_rate.nan?
-    end
-    self.calculate_comments(client, stories) if self.end_date > (Date.today-30)
+    stories, bugs = self.get_sprint_issues(integration, project, board)
+    self.calculate_recidivism_rate(board, client, integration, project, stories)
+    self.recidivism_rate = nil if self.recidivism_rate.nan?
+    self.calculate_comments(stories) 
+    self.calculate_bug_count
+    self.calculate_bug_count_long
+    self.calculate_velocity
     self.save if self.changed?
   end
 
@@ -54,21 +58,41 @@ class Sprint < ActiveRecord::Base
     self.recidivism_rate = (backward/(forward+backward)*100)
   end
 
-  def calculate_comments(client, stories)
+  def calculate_comments(stories)
     comments = 0
-    stories.each { |s| comments += Comment.where(external_id: s, defect: nil).count }
+    stories.each do |s|
+      story = Story.find_by_external_id(s)
+      comments += Comment.where(story_id: story.id, defect: nil).count
+    end
     self.comment_count = comments
   end
 
-  def get_sprint_stories(integration, project, board)
+  def calculate_bug_count
+    self.bug_count = Issue.where(kind: 'Bug', jira_create: self.start_date..self.end_date).count
+  end
+
+  def calculate_bug_count_long
+    sprint_length = self.end_date - self.start_date
+    self.bug_count_long = Issue.where(kind: 'Bug', jira_create: self.start_date..self.end_date+(sprint_length*3)).count
+  end
+
+  def calculate_velocity
+    self.velocity = Issue.where(kind: ['Story', 'Task'], jira_resolve: self.start_date..self.end_date).sum('story_points')
+  end
+
+  def get_sprint_issues(integration, project, board)
     body = HTTP.basic_auth(user: integration.auth_info["jira_username"], pass: integration.auth_info["jira_password"]).headers('Content-Type' => 'application/json').get("https://#{integration.site_url}/rest/agile/1.0/board/#{board.external_id}/sprint/#{self.external_id}/issue", params: { fields: "summary, issuetype", expand: "changelog", maxResults: 1000} ).body
     sprint_issues = JSON.parse(Project.parse_http_body(body))
-    issues = []
+    stories = []
+    bugs = []
     sprint_issues["issues"].each do |sprint_issue|
       if sprint_issue["fields"]["issuetype"]["name"].in?(['Story', project.custom_issue_type])
-        issues.append(sprint_issue["id"])
+        stories.append(sprint_issue["id"])
+      end
+      if sprint_issue["fields"]["issuetype"]["name"].in?(['Bug'])
+        bugs.append(sprint_issue["id"])
       end
     end
-    return issues
+    return stories, bugs
   end
 end
