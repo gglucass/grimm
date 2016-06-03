@@ -29,7 +29,8 @@ class ProjectsController < ApplicationController
     @medium_defects = @project_defects.where(severity: "medium")
     @minor_defects = @project_defects.where(severity: "minor")
     @false_positives = @project.defects.where(false_positive: true)
-    @perfect_stories = Story.includes(:defects).where(defects: {id: nil}, project_id: @project.id).order(:external_key).paginate(page: params[:page])
+    @perfect_stories_all = Story.includes(:defects).where(defects: {id: nil}, project_id: @project.id).order(:external_key)
+    @perfect_stories = @perfect_stories_all.paginate(page: params[:page])
     @stories = Story.where(project_id: @project.id).order(:external_key).paginate(page: params[:page])
   end
 

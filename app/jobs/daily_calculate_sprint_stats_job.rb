@@ -1,5 +1,6 @@
 class DailyCalculateSprintStatsJob < ActiveJob::Base
   queue_as :default
+  include SuckerPunch::Job
 
   def perform(first_run=false)
     integrations = Integration.get_all_integrations()

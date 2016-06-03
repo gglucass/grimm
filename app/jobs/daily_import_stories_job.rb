@@ -1,5 +1,6 @@
 class DailyImportStoriesJob < ActiveJob::Base
   queue_as :default
+  include SuckerPunch::Job
 
   def perform()
     integrations = Integration.get_all_integrations()

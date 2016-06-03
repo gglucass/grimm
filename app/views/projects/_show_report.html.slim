@@ -51,7 +51,7 @@ br
     .defect-block
       .defect-circle.perfect-stories
         .height-fix
-        .defect-circle-content= perfect_stories.length
+        .defect-circle-content= perfect_stories_all.length
       = link_to 'perfect stories', '?perfect_stories=true', class: 'defect-text'
 - if params['perfect_stories'] == 'true'
   - stories = perfect_stories
