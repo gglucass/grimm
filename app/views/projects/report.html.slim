@@ -3,6 +3,8 @@ center
     = "#{@project.name} - "
     = pluralize(@project.stories.count, "story")
 
+.btn.btn-default= link_to t(".download_csv"), project_report_path(@project.id, format: 'csv')
+
 - @project.boards.each_with_index do |board, index|
   h2
     = "Board #{index}: #{board.name}"

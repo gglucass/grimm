@@ -50,6 +50,10 @@ class ProjectsController < ApplicationController
   end
 
   def report
+    respond_to do |format|
+      format.html
+      format.csv { send_data @project.to_csv }
+    end
   end
 
   private
