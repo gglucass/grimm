@@ -39,7 +39,8 @@
       - @medium_defects = @project.defects.where(severity: "high", false_positive: false)
       - @minor_defects = @project.defects.where(severity: "minor", false_positive: false)
       - @false_positives = @project.defects.where(false_positive: true)
-      - @perfect_stories = Story.includes(:defects).where(defects: {id: nil}, project_id: @project.id).paginate(page: params[:page])
+      - @perfect_stories_all = Story.includes(:defects).where(defects: {id: nil}, project_id: @project.id).order(:external_key)
+      - @perfect_stories = @perfect_stories_all.paginate(page: params[:page])
       - @stories = @project.stories.order(:external_key).paginate(page: params[:page])
       = render partial: "projects/show_report", locals: {project: @project, project_defects: @project_defects, minor_defects: @minor_defects, medium_defects: @medium_defects, severe_defects: @severe_defects, false_positives: @false_positives, perfect_stories: @perfect_stories, stories: @stories}
 
