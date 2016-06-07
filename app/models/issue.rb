@@ -6,8 +6,8 @@ class Issue < ActiveRecord::Base
     field_name = integration.get_user_story_point_field_name
     continue = true
     start_at = 0
-    issues = client.Issue.jql(jql, start_at: start_at, max_results: 100)
     while continue
+      issues = client.Issue.jql(jql, start_at: start_at, max_results: 100)
       continue = issues.count == 100
       start_at += 100
       issues.each do |issue|
