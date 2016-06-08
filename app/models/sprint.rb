@@ -29,6 +29,9 @@ class Sprint < ActiveRecord::Base
     self.calculate_bug_count
     self.calculate_bug_count_long
     self.calculate_velocity
+    self.calculate_bug_count(project)
+    self.calculate_bug_count_long(project)
+    self.calculate_velocity(project)
     self.save if self.changed?
   end
 
@@ -70,17 +73,17 @@ class Sprint < ActiveRecord::Base
     self.comment_count = comments
   end
 
-  def calculate_bug_count
-    self.bug_count = Issue.where(kind: 'Bug', jira_create: self.start_date..self.end_date).count
+  def calculate_bug_count(project)
+    self.bug_count = Issue.where(kind: 'Bug', project_id: project.id, jira_create: self.start_date..self.end_date).count
   end
 
-  def calculate_bug_count_long
+  def calculate_bug_count_long(project)
     sprint_length = self.end_date - self.start_date
-    self.bug_count_long = Issue.where(kind: 'Bug', jira_create: self.start_date..self.end_date+(sprint_length*3)).count
+    self.bug_count_long = Issue.where(kind: 'Bug', project_id: project.id, jira_create: self.start_date..self.end_date+(sprint_length*3)).count
   end
 
-  def calculate_velocity
-    self.velocity = Issue.where(kind: ['Story', 'Task'], jira_resolve: self.start_date..self.end_date).sum('story_points')
+  def calculate_velocity(project)
+    self.velocity = Issue.where(kind: ['Story', 'Task'], project_id: project.id, jira_resolve: self.start_date..self.end_date).sum('story_points')
   end
 
   def get_sprint_issues(integration, project, board)
