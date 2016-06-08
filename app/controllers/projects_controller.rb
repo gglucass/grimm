@@ -52,7 +52,7 @@ class ProjectsController < ApplicationController
   def report
     respond_to do |format|
       format.html
-      format.csv { send_data @project.to_csv }
+      format.csv { send_data @project.to_csv, filename: "#{@project.name}.csv" }
     end
   end
 
