@@ -26,9 +26,6 @@ class Sprint < ActiveRecord::Base
     self.calculate_recidivism_rate(board, client, integration, project, stories)
     self.recidivism_rate = nil if self.recidivism_rate.nan?
     self.calculate_comments(stories) 
-    self.calculate_bug_count
-    self.calculate_bug_count_long
-    self.calculate_velocity
     self.calculate_bug_count(project)
     self.calculate_bug_count_long(project)
     self.calculate_velocity(project)
