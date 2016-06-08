@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160519121839) do
+ActiveRecord::Schema.define(version: 20160608131513) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -136,8 +136,9 @@ ActiveRecord::Schema.define(version: 20160519121839) do
     t.integer  "priority"
     t.string   "name"
     t.integer  "board_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.string   "status_category"
   end
 
   add_index "statuses", ["board_id"], name: "index_statuses_on_board_id", using: :btree
