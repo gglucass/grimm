@@ -112,7 +112,7 @@ class Integration < ActiveRecord::Base
 
     def get_user_story_point_field_name
       fields = JSON.parse(HTTP.basic_auth(user: self.auth_info["jira_username"], pass: self.auth_info["jira_password"]).get("https://#{self.site_url}/rest/api/2/field").body.readpartial)
-      fields.keep_if { |f| f["name"] == "Story Points" }
+      fields.keep_if { |f| f["name"].downcase() == "story points" }
       return fields.first["id"]
     end
 
