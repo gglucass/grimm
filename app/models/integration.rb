@@ -146,7 +146,7 @@ class Integration < ActiveRecord::Base
     if ENV["HOSTNAME"] == "https://aqusa-coolblue.science.uu.nl"
       integrations = Integration.where(kind: 'jira', site_url: 'jira.coolblue.eu')
     else
-      integrations = Integration.where(kind: 'jira').where.not(site_url: 'jira.coolblue.eu')
+      integrations = Integration.where(kind: 'jira').where.not(site_url: ['jira.coolblue.eu', 'jira.isatis.nl'])
     end
     return integrations
   end

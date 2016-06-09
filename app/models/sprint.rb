@@ -22,21 +22,21 @@ class Sprint < ActiveRecord::Base
     project = board.project
     integration = project.integrations.first
     client = integration.initialize_jira_client
-    stories, bugs = self.get_sprint_issues(integration, project, board)
-    self.calculate_recidivism_rate(board, client, integration, project, stories)
+    issues = self.get_sprint_issues(integration, project, board)
+    self.calculate_recidivism_rate(board, client, integration, project, issues.values_at("Story", "Task")) #Story and Task specify what kind of issues are taken into account for recidivism rate
     self.recidivism_rate = nil if self.recidivism_rate.nan?
-    self.calculate_comments(stories) 
+    self.calculate_comments(issues.values_at("Story")) 
     self.calculate_bug_count(project)
     self.calculate_bug_count_long(project)
     self.calculate_velocity(project)
     self.save if self.changed?
   end
 
-  def calculate_recidivism_rate(board, client, integration, project, stories)
+  def calculate_recidivism_rate(board, client, integration, project, issues)
     status_hash = board.parse_board_status(integration, project)
     forward = 0.0
     backward = 0.0
-    stories.each do |story|
+    issues.each do |story|
       jira_issue = client.Issue.find(story, expand: 'changelog')
       issue_changelog = jira_issue.attrs["changelog"]["histories"]
       issue_changelog.each do |history|
@@ -88,14 +88,9 @@ class Sprint < ActiveRecord::Base
     sprint_issues = JSON.parse(Project.parse_http_body(body))
     stories = []
     bugs = []
-    sprint_issues["issues"].each do |sprint_issue|
-      if sprint_issue["fields"]["issuetype"]["name"].in?(['Story', project.custom_issue_type])
-        stories.append(sprint_issue["id"])
-      end
-      if sprint_issue["fields"]["issuetype"]["name"].in?(['Bug'])
-        bugs.append(sprint_issue["id"])
-      end
-    end
-    return stories, bugs
+    issues = Hash.new{ |issues,k| issues[k]=[] }
+    f = sprint_issues["issues"].map { |i| [i["fields"]["issuetype"]["name"], i["id"]] }
+    f.each{ |k,v| issues[k] << v }
+    return issues
   end
 end
