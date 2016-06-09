@@ -36,6 +36,7 @@ class Board < ActiveRecord::Base
         end
       end
     end
-    return (self.statuses.pluck(:name, :priority) + self.statuses.pluck(:status_category, :priority)).to_h
+    status_hash = self.statuses.pluck(:name, :priority).to_h.reverse_merge(self.statuses.pluck(:status_category, :priority).to_h)
+    return status_hash
   end
 end

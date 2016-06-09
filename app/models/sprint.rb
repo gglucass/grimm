@@ -24,9 +24,9 @@ class Sprint < ActiveRecord::Base
     client = integration.initialize_jira_client
     issues = self.get_sprint_issues(integration, project, board)
     puts "These are the issues\n#{issues}"
-    self.calculate_recidivism_rate(board, client, integration, project, issues.values_at("Story", "Task", "Story task", "Sub-Task").flatten()) #Story and Task specify what kind of issues are taken into account for recidivism rate
+    self.calculate_recidivism_rate(board, client, integration, project, issues.values_at("story", "task", "story task", "sub-task", "story-task").flatten()) #Story and Task specify what kind of issues are taken into account for recidivism rate
     self.recidivism_rate = nil if self.recidivism_rate.nan?
-    self.calculate_comments(issues.values_at("Story").flatten()) 
+    self.calculate_comments(issues.values_at("story").flatten()) 
     self.calculate_bug_count(project)
     self.calculate_bug_count_long(project)
     self.calculate_velocity(project)
@@ -90,7 +90,7 @@ class Sprint < ActiveRecord::Base
     stories = []
     bugs = []
     issues = Hash.new{ |issues,k| issues[k]=[] }
-    f = sprint_issues["issues"].map { |i| [i["fields"]["issuetype"]["name"], i["id"]] }
+    f = sprint_issues["issues"].map { |i| [i["fields"]["issuetype"]["name"].downcase, i["id"]] }
     f.each{ |k,v| issues[k] << v }
     return issues
   end
