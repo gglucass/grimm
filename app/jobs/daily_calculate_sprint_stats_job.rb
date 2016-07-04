@@ -8,7 +8,7 @@ class DailyCalculateSprintStatsJob < ActiveJob::Base
       begin
         integration.projects.each do |project| 
           Board.import_boards(integration, project)
-          jql = first_run ? "project=#{project.external_id}" : "project=#{project.external_id} and updated > -30d"
+          jql = first_run ? "project=#{project.external_id} and updated > -120d" : "project=#{project.external_id} and updated > -30d"
           Issue.import_issues(integration, project, jql)
           Comment.import_comments(integration, project)
           project.boards.each do |board|
