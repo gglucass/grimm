@@ -30,6 +30,7 @@ class Sprint < ActiveRecord::Base
     self.calculate_bug_count(project)
     self.calculate_bug_count_long(project)
     self.calculate_velocity(project)
+    self.issue_count = issues.values_at("story", "task", "story task", "sub-task", "story-task").flatten().count
     self.save if self.changed?
   end
 

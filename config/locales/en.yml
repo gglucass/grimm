@@ -48,6 +48,7 @@ en:
       comments: "Comments: %{comment_count}"
       bug_count: "Bugs in sprint: %{bug_count}"
       bug_count_long: "Bugs in sprint + 3 sprints: %{bug_count_long}"
+      issue_count: "Issues in sprint"
   defect_comments:
     well_formed:
       no_means_comma_explanation: "The user story is well-formed, but it's good practice to add a comma between the role and action segments"
