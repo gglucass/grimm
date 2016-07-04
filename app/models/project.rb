@@ -32,11 +32,11 @@ class Project < ActiveRecord::Base
 
   def to_csv(options = {})
     CSV.generate(options) do |csv|
-      csv << ["Name", "id", "start date", "end date", "metrics", "recidivism rate", "velocity", "comments", "pre-release defects", "post-release defects"]
+      csv << ["Name", "id", "start date", "end date", "metrics", "recidivism rate", "velocity", "comments", "pre-release defects", "post-release defects", "issue count"]
       self.boards.each do |board|
         csv << [board.name]
         board.sprints.each do |sprint|
-          csv << [sprint.name, sprint.id, sprint.start_date.to_date, sprint.end_date.to_date, " ", sprint.recidivism_rate.try(:round, 2), sprint.velocity.try(:round, 0), sprint.comment_count, sprint.bug_count, sprint.bug_count_long]
+          csv << [sprint.name, sprint.id, sprint.start_date.to_date, sprint.end_date.to_date, " ", sprint.recidivism_rate.try(:round, 2), sprint.velocity.try(:round, 0), sprint.comment_count, sprint.bug_count, sprint.bug_count_long, sprint.issue_count]
         end
       end
     end
