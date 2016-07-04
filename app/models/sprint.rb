@@ -77,7 +77,7 @@ class Sprint < ActiveRecord::Base
 
   def calculate_bug_count_long(project)
     sprint_length = self.end_date - self.start_date
-    self.bug_count_long = Issue.where(kind: 'Bug', project_id: project.id, jira_create: self.start_date..self.end_date+(sprint_length*3)).count
+    self.bug_count_long = Issue.where(kind: 'Bug', project_id: project.id, jira_create: self.end_date..self.end_date+(sprint_length*2)).count
   end
 
   def calculate_velocity(project)
