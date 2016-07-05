@@ -34,6 +34,15 @@ class Sprint < ActiveRecord::Base
     self.save if self.changed?
   end
 
+  def calculate_issue_count(sprint)
+    board = sprint.board
+    project = board.project
+    integration = project.integrations.first
+    client = integration.initialize_jira_client
+    issues = sprint.get_sprint_issues(integration, project, board)
+    sprint.issue_count = issues.values_at("story", "task", "story task", "sub-task", "story-task").flatten().count
+    sprint.save() if sprint.changed?
+  end
   def calculate_recidivism_rate(board, client, integration, project, issues)
     status_hash = board.parse_board_status(integration, project)
     forward = 0.0

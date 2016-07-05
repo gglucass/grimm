@@ -17,7 +17,7 @@ class Board < ActiveRecord::Base
 
 # todo: redo parse board status every now and then so recidivism is correctly calculated after updating the workflow
   def parse_board_status(integration, project)
-    board_statuses = JSON.parse(HTTP.basic_auth(user: integration.auth_info["jira_username"], pass: integration.auth_info["jira_password"]).get("https://#{integration.site_url}/rest/api/2/project/#{project.external_id}/statuses").body.readpartial)
+    board_statuses = JSON.parse(HTTP.basic_auth(user: integration.auth_info["jira_username"], pass: integration.auth_info["jira_password"]).get("https://#{integration.site_url_full}/rest/api/2/project/#{project.external_id}/statuses").body.readpartial)
     board_statuses.each do |board_status|
       if board_status["name"] == "Story"
         statuses = board_status["statuses"]

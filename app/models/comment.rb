@@ -9,7 +9,7 @@ class Comment < ActiveRecord::Base
 
   def self.import_comments(integration, project)
     client = integration.initialize_jira_client()
-    project.stories.each do |story|
+    Issue.where(project_id: project.id, kind: 'story').each do |story|
       begin
         jira_story = client.Issue.find(story.external_id)
         jira_story.comments.each do |comment|
@@ -34,7 +34,7 @@ class Comment < ActiveRecord::Base
   end
 
   def remove_from_jira(integration)
-    HTTP.basic_auth(user: integration.auth_info["jira_username"], pass: integration.auth_info["jira_password"]).delete("https://#{integration.site_url}/rest/api/2/issue/#{self.defect.story.external_id}/comment/#{self.external_id}")
+    HTTP.basic_auth(user: integration.auth_info["jira_username"], pass: integration.auth_info["jira_password"]).delete("https://#{integration.site_url_full}/rest/api/2/issue/#{self.defect.story.external_id}/comment/#{self.external_id}")
   end
 
   def self.parse_jira_highlight(highlight)
