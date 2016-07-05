@@ -111,7 +111,7 @@ class Integration < ActiveRecord::Base
   end
 
     def get_user_story_point_field_name
-      fields = JSON.parse(HTTP.basic_auth(user: self.auth_info["jira_username"], pass: self.auth_info["jira_password"]).get("https://#{self.site_url}/rest/api/2/field").body.readpartial)
+      fields = JSON.parse(HTTP.basic_auth(user: self.auth_info["jira_username"], pass: self.auth_info["jira_password"]).get("https://#{self.site_url_full}/rest/api/2/field").body.readpartial)
       fields.keep_if { |f| f["name"].downcase() == "story points" }
       return fields.first["id"]
     end
@@ -122,14 +122,17 @@ class Integration < ActiveRecord::Base
 
   def create_jira_webhook
     if self.kind == 'jira' and Integration.where(site_url: self.site_url).count <= 1
-      HTTP.basic_auth(:user => self.auth_info['jira_username'], :pass => self.auth_info['jira_password']).headers('Content-Type' => 'application/json').post("https://#{self.site_url}/rest/webhooks/1.0/webhook", json: { name: 'AQUSA webhook', 
-        url: "#{ENV["HOSTNAME"]}/webhook", 
-        events: ["jira:issue_created", "jira:issue_updated", "jira:issue_deleted", "jira:worklog_updated",
-              "sprint_created", "sprint_updated", "sprint_deleted", "sprint_started", "sprint_closed",
-              "board_created", "board_updated", "board_deleted", "board_configuration_changed",
-              "project_created", "project_updated", "project_deleted"],
-        jqlFilter: "", 
-        excludeIssueDetails: false})
+      begin
+        HTTP.basic_auth(:user => self.auth_info['jira_username'], :pass => self.auth_info['jira_password']).headers('Content-Type' => 'application/json').post("https://#{self.site_url_full}/rest/webhooks/1.0/webhook", json: { name: 'AQUSA webhook', 
+          url: "#{ENV["HOSTNAME"]}/webhook", 
+          events: ["jira:issue_created", "jira:issue_updated", "jira:issue_deleted", "jira:worklog_updated",
+                "sprint_created", "sprint_updated", "sprint_deleted", "sprint_started", "sprint_closed",
+                "board_created", "board_updated", "board_deleted", "board_configuration_changed",
+                "project_created", "project_updated", "project_deleted"],
+          jqlFilter: "", 
+          excludeIssueDetails: false})
+      rescue
+      end
     end
   end
 
@@ -149,5 +152,9 @@ class Integration < ActiveRecord::Base
       integrations = Integration.where(kind: 'jira').where.not(site_url: ['jira.coolblue.eu', 'jira.isatis.nl'])
     end
     return integrations
+  end
+
+  def site_url_full
+    self.site_url + (self.auth_info['context_path'] || '')
   end
 end
