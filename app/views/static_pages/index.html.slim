@@ -31,7 +31,7 @@
       = t('.call_to_action')
       = " "
       span.glyphicon.glyphicon-play
-    p=t('.upsell_html', href: link_to('g.lucassen@uu.nl', 'mailto:g.lucassen@uu.nl'))
+    p=t('.upsell_html', href: link_to('g.lucassen@uu.nl', 'mailto:g.lucassen@uu.nl'), href2: link_to("a role or sprint's user stories", 'http://vowl.visualdataweb.org/webvowl/index.html#iri=http://www.staff.science.uu.nl/~lucas001/us_vis/WebCompany/Administrator1.omn'))
     - if @project
       - @project_defects = @project.defects.where(false_positive: false)
       - @severe_defects = @project.defects.where(severity: "medium", false_positive: false)
@@ -43,6 +43,3 @@
       - @stories = @project.stories.order(:external_key).paginate(page: params[:page])
       h2="Example Grimm Tool output"
       = render partial: "projects/show_report", locals: {project: @project, project_defects: @project_defects, minor_defects: @minor_defects, medium_defects: @medium_defects, severe_defects: @severe_defects, false_positives: @false_positives, perfect_stories: @perfect_stories, stories: @stories, perfect_stories_all: @perfect_stories_all}
-    h2="Example visualization"
-    iframe src='http://vowl.visualdataweb.org/webvowl/index.html#iri=http://www.staff.science.uu.nl/~lucas001/us_vis/WebCompany/Administrator1.omn' width="100%" height="960px"
-    p=t('.explanation_html', href: link_to('AQUSA', 'http://github.com/gglucass/AQUSA'))
