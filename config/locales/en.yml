@@ -22,8 +22,9 @@
 en:
   static_pages:
     index:
-      welcome: "Create perfect user stories"
-      tag_line: "Automated user story review that notifies you of all preventable errors"
+      welcome: "Create better user stories"
+      tag_line: "The Grimm Tool analyzes user stories in real-time and immediately notifies you about quality defects in your user stories."
+      upsell_html: "No defects? Then we can automatically generate visualizations like the one at the bottom of this page. Contact %{href} to learn more!"
       explanation_html: "Grimm is a consumer-friendly version of the academic %{href} project. This version allows you to easily plug-in your Jira  information and receive error reports in real-time as comments on your issues."
       call_to_action: "Sign up with email"
       new_project: "New static project (CSV)"
