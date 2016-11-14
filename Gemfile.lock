@@ -135,12 +135,12 @@ GEM
       activerecord (>= 3.0, < 6.0)
       activesupport (>= 3.0, < 6.0)
       request_store (~> 1.1)
-    paperclip (5.1.0)
-      activemodel (>= 4.2.0)
-      activesupport (>= 4.2.0)
+    paperclip (4.3.7)
+      activemodel (>= 3.2.0)
+      activesupport (>= 3.2.0)
       cocaine (~> 0.5.5)
       mime-types
-      mimemagic (~> 0.3.0)
+      mimemagic (= 0.3.0)
     passenger (5.0.20)
       rack
       rake (>= 0.8.1)
@@ -269,7 +269,7 @@ DEPENDENCIES
   jquery-rails
   mysql2 (~> 0.3.18)
   paper_trail
-  paperclip (~> 5.0)
+  paperclip (~> 4.3.7)
   passenger
   pg
   pry

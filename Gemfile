@@ -62,7 +62,7 @@ gem 'tracker_api'
 gem 'pundit'
 gem 'http'
 gem 'jira-ruby', require: 'jira'
-gem 'paperclip', '~> 5.0'
+gem 'paperclip', '~> 4.3.7'
 gem 'paper_trail'
 gem 'sucker_punch'
 gem 'whenever', require: false
