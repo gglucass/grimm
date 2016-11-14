@@ -3,7 +3,7 @@ require 'csv'
 class Project < ActiveRecord::Base
   has_paper_trail
   has_attached_file :requirements_document
-  # validates_attachment :requirements_document, content_type: { content_type: 'text/csv'}
+  validates_attachment :requirements_document, content_type: { content_type: 'text/csv'}
 
   has_and_belongs_to_many :users, -> { uniq }
   has_and_belongs_to_many :integrations, -> { uniq }
